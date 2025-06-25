@@ -3,17 +3,20 @@ const slugify = require('slugify');
 
 const isDev = process.env.NODE_ENV === 'development';
 
-exports.createCategoryValidator = (req, res, next) => {
+exports.createSubCategoryValidator = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().min(2).max(24).required()
-  });
+    name: Joi.string().min(2).max(24).required(),
+    category: Joi.string()
+      .pattern(/^[0-9a-fA-F]{24}$/)
+      .required()
+  }).or('name', 'category');
 
   const { error } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     const baseResponse = {
       status: 'fail',
-      message: 'Invalid category data'
+      message: 'Validation failed for subcategory data'
     };
 
     if (isDev) {
@@ -27,7 +30,7 @@ exports.createCategoryValidator = (req, res, next) => {
   next();
 };
 
-exports.updateCategoryValidator = (req, res, next) => {
+exports.updateSubCategoryValidator = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(2).max(24)
   });
@@ -37,7 +40,7 @@ exports.updateCategoryValidator = (req, res, next) => {
   if (error) {
     const baseResponse = {
       status: 'fail',
-      message: 'Invalid data for updating category'
+      message: 'Validation failed for subcategory data'
     };
 
     if (isDev) {

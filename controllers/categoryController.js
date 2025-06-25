@@ -1,7 +1,7 @@
-const Category = require("../models/categoryModel");
-const factory = require("./handlerFactory");
+const Category = require('../models/categoryModel');
+const factory = require('./handlerFactory');
 
-exports.createCategory = factory.createOne(Category);
+exports.createCategory = factory.createOne(Category, { slugifyName: true });
 
 exports.getAllCategories = factory.getAll(Category);
 
