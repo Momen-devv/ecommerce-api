@@ -1,17 +1,29 @@
 const express = require("express");
-const categoryController = require("../controllers/categoryController");
+const { mongoIdValidator } = require("../validators/commonValidators");
+const {
+  createCategoryValidator,
+  updateCategoryValidator,
+} = require("../validators/category.validator");
+
+const {
+  createCategory,
+  getAllCategories,
+  getCategory,
+  updateCategory,
+  deleteCategory,
+} = require("../controllers/categoryController");
 
 const router = express.Router();
 
 router
   .route("/")
-  .post(categoryController.createCategory)
-  .get(categoryController.getAllCategories);
+  .get(getAllCategories)
+  .post(createCategoryValidator, createCategory);
 
 router
   .route("/:id")
-  .get(categoryController.getCategory)
-  .patch(categoryController.updateCategory)
-  .delete(categoryController.deleteCategory);
+  .get(mongoIdValidator("CategoryId"), getCategory)
+  .patch(updateCategoryValidator, updateCategory)
+  .delete(mongoIdValidator("CategoryId"), deleteCategory);
 
 module.exports = router;

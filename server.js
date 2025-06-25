@@ -1,22 +1,26 @@
-require("dotenv").config();
-const morgan = require("morgan");
 const connectionDB = require("./db/connect");
+const app = require("./app");
 
-const categoryRoute = require("./routes/categoryRoute");
+process.on("uncaughtException", (error) => {
+  console.log("UNHANDLED EXCEPTION! Shutting down...");
+  console.log(error.name, error.message);
+  process.exit(1);
+});
 
-const express = require("express");
-const app = express();
-
-// Middlewar
-if (process.env.NODE_ENV == "development") app.use(morgan("dev"));
-app.use(express.json());
-
-app.use("/api/v1/categories", categoryRoute);
-
+require("dotenv").config();
 const PORT = process.env.PORT || 3000;
+let server;
 
 connectionDB().then(() => {
-  app.listen(PORT, () => {
+  server = app.listen(PORT, () => {
     console.log(`🚀 Server running on port:${PORT}`);
+  });
+});
+
+process.on("unhandledRejection", (error) => {
+  console.log("UNHANDLED REJECTION! Shutting down...");
+  console.log(error.name, error.message);
+  server.close(() => {
+    process.exit(1);
   });
 });
