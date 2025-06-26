@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const { mongoIdValidator } = require('../validators/commonValidators');
 const checkCategoryExists = require('../Middlewares/checkCategoryExists');
@@ -24,8 +24,8 @@ router
 
 router
   .route('/:id')
-  .get(mongoIdValidator('SubCategoryId'), getSubCategory)
-  .patch(updateSubCategoryValidator, updateSubCategory)
-  .delete(mongoIdValidator('SubCategoryId'), deleteSubCategory);
+  .get(mongoIdValidator(), getSubCategory)
+  .patch(updateSubCategoryValidator, checkCategoryExists, updateSubCategory)
+  .delete(mongoIdValidator(), deleteSubCategory);
 
 module.exports = router;

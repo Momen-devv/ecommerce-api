@@ -1,3 +1,4 @@
+const { types, required } = require('joi');
 const mongoose = require('mongoose');
 
 const subCategorySchema = new mongoose.Schema(

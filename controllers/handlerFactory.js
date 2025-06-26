@@ -39,13 +39,16 @@ exports.getOne = (Model) =>
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
-    const features = new APIFeatures(Model.find(), req.query)
+    let filter = {};
+    if (req.params.categoryId) filter = { category: req.params.categoryId };
+
+    const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
       .limitFields()
       .paginate();
 
-    const filterQuery = features.query.getFilter();
+    const filterQuery = features.query;
 
     const [docs, totalDocs] = await Promise.all([
       features.query,
@@ -81,6 +84,8 @@ exports.deleteOne = (Model) =>
 
 exports.createOne = (Model, options = {}) =>
   catchAsync(async (req, res, next) => {
+    if (!req.body.categoryId) req.body.category = req.params.categoryId;
+
     const data = { ...req.body };
 
     if (data.name && options.slugifyName) {

@@ -21,7 +21,6 @@ exports.mongoIdValidator =
       };
 
       if (isDev) {
-        baseResponse.message = `Invalid MongoDB ID for ${paramName}`;
         baseResponse.details = error.details.map((d) => d.message);
       }
 

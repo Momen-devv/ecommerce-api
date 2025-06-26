@@ -5,6 +5,7 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const categoryRoute = require('./routes/categoryRoute');
 const subCategoryRoute = require('./routes/subCategoryRoute');
+const brandRouter = require('./routes/brandRoute');
 
 const express = require('express');
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subcategories', subCategoryRoute);
+app.use('/api/v1/brands', brandRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

@@ -3,18 +3,17 @@ const slugify = require('slugify');
 
 const isDev = process.env.NODE_ENV === 'development';
 
-exports.createSubCategoryValidator = (req, res, next) => {
+exports.createBrandValidator = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().min(2).max(24).required(),
-    category: Joi.string().pattern(/^[0-9a-fA-F]{24}$/)
-  }).or('name', 'category');
+    name: Joi.string().min(2).max(24).required()
+  });
 
   const { error } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     const baseResponse = {
       status: 'fail',
-      message: 'Validation failed for subcategory data'
+      message: 'Invalid brand data'
     };
 
     if (isDev) {
@@ -28,18 +27,17 @@ exports.createSubCategoryValidator = (req, res, next) => {
   next();
 };
 
-exports.updateSubCategoryValidator = (req, res, next) => {
+exports.updateBrandValidator = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().min(2).max(24),
-    category: Joi.string().pattern(/^[0-9a-fA-F]{24}$/)
-  }).or('name', 'category');
+    name: Joi.string().min(2).max(24)
+  });
 
   const { error } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     const baseResponse = {
       status: 'fail',
-      message: 'Validation failed for subcategory data'
+      message: 'Invalid data for updating brand'
     };
 
     if (isDev) {

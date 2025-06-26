@@ -1,5 +1,6 @@
 const express = require('express');
 const { mongoIdValidator } = require('../validators/commonValidators');
+const subCategoryRoute = require('./subCategoryRoute');
 const {
   createCategoryValidator,
   updateCategoryValidator
@@ -15,15 +16,14 @@ const {
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(getAllCategories)
-  .post(createCategoryValidator, createCategory);
+router.use('/:categoryId/subcategories', subCategoryRoute);
+
+router.route('/').get(getAllCategories).post(createCategoryValidator, createCategory);
 
 router
   .route('/:id')
-  .get(mongoIdValidator('CategoryId'), getCategory)
+  .get(mongoIdValidator(), getCategory)
   .patch(updateCategoryValidator, updateCategory)
-  .delete(mongoIdValidator('CategoryId'), deleteCategory);
+  .delete(mongoIdValidator(), deleteCategory);
 
 module.exports = router;
