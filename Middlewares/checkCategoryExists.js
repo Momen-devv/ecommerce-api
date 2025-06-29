@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
     if (!exists) {
       return res.status(400).json({
         status: 'fail',
-        message: 'Category not found for this subcategory'
+        message: 'Invalid category ID: no category found'
       });
     }
   }

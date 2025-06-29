@@ -7,17 +7,22 @@ const {
   getAllBrands,
   getBrand,
   updateBrand,
-  deleteDelete
+  deleteDelete,
+  uploadBrandImage,
+  reSizePhoto
 } = require('../controllers/brandController');
 
 const router = express.Router();
 
-router.route('/').get(getAllBrands).post(createBrandValidator, createBrand);
+router
+  .route('/')
+  .get(getAllBrands)
+  .post(uploadBrandImage, reSizePhoto, createBrandValidator, createBrand);
 
 router
   .route('/:id')
   .get(mongoIdValidator(), getBrand)
-  .patch(updateBrandValidator, updateBrand)
+  .patch(uploadBrandImage, reSizePhoto, updateBrandValidator, updateBrand)
   .delete(mongoIdValidator(), deleteDelete);
 
 module.exports = router;

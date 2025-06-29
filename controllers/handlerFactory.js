@@ -24,9 +24,11 @@ exports.updateOne = (Model) =>
     });
   });
 
-exports.getOne = (Model) =>
+exports.getOne = (Model, populateOptions) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findById(req.params.id);
+    const query = Model.findById(req.params.id);
+    if (populateOptions) query.populate(populateOptions);
+    const doc = await query;
 
     if (!doc) {
       return next(new AppError('No doc found with this ID', 404));
@@ -37,7 +39,7 @@ exports.getOne = (Model) =>
     });
   });
 
-exports.getAll = (Model) =>
+exports.getAll = (Model, modelName = '') =>
   catchAsync(async (req, res, next) => {
     let filter = {};
     if (req.params.categoryId) filter = { category: req.params.categoryId };
@@ -45,6 +47,7 @@ exports.getAll = (Model) =>
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
+      .search(modelName)
       .limitFields()
       .paginate();
 
@@ -82,15 +85,13 @@ exports.deleteOne = (Model) =>
     });
   });
 
-exports.createOne = (Model, options = {}) =>
+exports.createOne = (Model = {}) =>
   catchAsync(async (req, res, next) => {
-    if (!req.body.categoryId) req.body.category = req.params.categoryId;
+    if (!req.body.category && req.params.categoryId) {
+      req.body.category = req.params.categoryId;
+    }
 
     const data = { ...req.body };
-
-    if (data.name && options.slugifyName) {
-      data.slug = slugify(data.name);
-    }
 
     const doc = await Model.create(data);
 

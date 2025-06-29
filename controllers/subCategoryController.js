@@ -1,9 +1,7 @@
 const SubCategory = require('../models/subCategoryModel');
 const factory = require('./handlerFactory');
 
-exports.createSubCategory = factory.createOne(SubCategory, {
-  slugifyName: true
-});
+exports.createSubCategory = factory.createOne(SubCategory);
 
 exports.getAllSubCategories = factory.getAll(SubCategory);
 

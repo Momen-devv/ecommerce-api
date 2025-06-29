@@ -5,7 +5,8 @@ const isDev = process.env.NODE_ENV === 'development';
 
 exports.createCategoryValidator = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().min(2).max(24).required()
+    name: Joi.string().min(2).max(24).required(),
+    image: Joi.string().optional()
   });
 
   const { error } = schema.validate(req.body, { abortEarly: false });

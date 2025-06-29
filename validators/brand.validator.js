@@ -5,7 +5,8 @@ const isDev = process.env.NODE_ENV === 'development';
 
 exports.createBrandValidator = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().min(2).max(24).required()
+    name: Joi.string().min(2).max(24).required(),
+    image: Joi.string().required()
   });
 
   const { error } = schema.validate(req.body, { abortEarly: false });
@@ -29,7 +30,8 @@ exports.createBrandValidator = (req, res, next) => {
 
 exports.updateBrandValidator = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().min(2).max(24)
+    name: Joi.string().min(2).max(24),
+    image: Joi.string().optional()
   });
 
   const { error } = schema.validate(req.body, { abortEarly: false });
