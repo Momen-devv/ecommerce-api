@@ -1,6 +1,7 @@
 const express = require('express');
 const { mongoIdValidator } = require('../validators/commonValidators');
 const { createBrandValidator, updateBrandValidator } = require('../validators/brand.validator');
+const authController = require('../controllers/authController');
 
 const {
   createBrand,
@@ -17,12 +18,31 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllBrands)
-  .post(uploadBrandImage, reSizePhoto, createBrandValidator, createBrand);
+  .post(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    uploadBrandImage,
+    reSizePhoto,
+    createBrandValidator,
+    createBrand
+  );
 
 router
   .route('/:id')
-  .get(mongoIdValidator(), getBrand)
-  .patch(uploadBrandImage, reSizePhoto, updateBrandValidator, updateBrand)
-  .delete(mongoIdValidator(), deleteDelete);
+  .get(mongoIdValidator, getBrand)
+  .patch(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    uploadBrandImage,
+    reSizePhoto,
+    updateBrandValidator,
+    updateBrand
+  )
+  .delete(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    mongoIdValidator,
+    deleteDelete
+  );
 
 module.exports = router;

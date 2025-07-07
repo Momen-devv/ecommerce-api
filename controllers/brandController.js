@@ -8,14 +8,15 @@ exports.uploadBrandImage = uploadSingleImage('image');
 
 exports.reSizePhoto = catchAsync(async (req, res, next) => {
   const fileName = `brand-${Math.round(Math.random() * 1e9)}-${Date.now()}.jpeg`;
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`uploads/brands/${fileName}`);
 
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`uploads/brands/${fileName}`);
-
-  req.body.image = fileName;
+    req.body.image = fileName;
+  }
   next();
 });
 

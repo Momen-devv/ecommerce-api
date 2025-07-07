@@ -8,6 +8,8 @@ const {
   updateSubCategoryValidator
 } = require('../validators/subCategory.validator');
 
+const authController = require('../controllers/authController');
+
 const {
   createSubCategory,
   updateSubCategory,
@@ -20,12 +22,26 @@ const {
 router
   .route('/')
   .get(getAllSubCategories)
-  .post(createSubCategoryValidator, checkCategoryExists, createSubCategory);
+  .post(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    createSubCategoryValidator,
+    checkCategoryExists,
+    createSubCategory
+  );
 
 router
   .route('/:id')
-  .get(mongoIdValidator(), getSubCategory)
-  .patch(updateSubCategoryValidator, checkCategoryExists, updateSubCategory)
-  .delete(mongoIdValidator(), deleteSubCategory);
+  .get(mongoIdValidator, getSubCategory)
+  .patch(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    updateSubCategoryValidator,
+    checkCategoryExists,
+    updateSubCategory
+  ).delete;
+(authController.protect,
+  authController.restricTo('admin', 'manager'),
+  (mongoIdValidator, deleteSubCategory));
 
 module.exports = router;

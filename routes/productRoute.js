@@ -8,13 +8,16 @@ const {
   createProductValidator,
   updateProductValidator
 } = require('../validators/product.validator');
+const authController = require('../controllers/authController');
 
 const {
   createProduct,
   getAllProducts,
   getProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  uploadProductImages,
+  resizeProductImages
 } = require('../controllers/productController');
 
 const router = express.Router();
@@ -23,6 +26,10 @@ router
   .route('/')
   .get(getAllProducts)
   .post(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    uploadProductImages,
+    resizeProductImages,
     createProductValidator,
     checkCategoryExists,
     checkSubcategoriesExist,
@@ -33,9 +40,13 @@ router
 
 router
   .route('/:id')
-  .get(mongoIdValidator(), getProduct)
+  .get(mongoIdValidator, getProduct)
   .patch(
-    mongoIdValidator(),
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    mongoIdValidator,
+    uploadProductImages,
+    resizeProductImages,
     updateProductValidator,
     checkCategoryExists,
     checkSubcategoriesExist,
@@ -43,6 +54,11 @@ router
     checkBrandExists,
     updateProduct
   )
-  .delete(mongoIdValidator(), deleteProduct);
+  .delete(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    mongoIdValidator,
+    deleteProduct
+  );
 
 module.exports = router;
