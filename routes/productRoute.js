@@ -1,9 +1,10 @@
 const express = require('express');
 const { mongoIdValidator } = require('../validators/commonValidators');
 const checkCategoryExists = require('../Middlewares/checkCategoryExists');
-const checkSubcategoriesExist = require('../Middlewares/checkSubcategoriesExist');
+const checkSubcategoriesExist = require('../Middlewares/checkSubcategoriesExists');
 const checkBrandExists = require('../Middlewares/checkBrandExists');
 const checkSubcategoriesBelongToCategory = require('../Middlewares/checkSubcategoriesBelongToCategory');
+const { subcategoriesToArray } = require('../Middlewares/subcategoriesToArray');
 const {
   createProductValidator,
   updateProductValidator
@@ -30,6 +31,7 @@ router
     authController.restricTo('admin', 'manager'),
     uploadProductImages,
     resizeProductImages,
+    subcategoriesToArray,
     createProductValidator,
     checkCategoryExists,
     checkSubcategoriesExist,
@@ -47,6 +49,7 @@ router
     mongoIdValidator,
     uploadProductImages,
     resizeProductImages,
+    subcategoriesToArray,
     updateProductValidator,
     checkCategoryExists,
     checkSubcategoriesExist,

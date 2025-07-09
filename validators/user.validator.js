@@ -1,8 +1,4 @@
 const Joi = require('joi');
-const slugify = require('slugify');
-const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');
-const AppError = require('../utils/appError');
 
 exports.createUserValidator = (req, res, next) => {
   const schema = Joi.object({
@@ -47,9 +43,7 @@ exports.createUserValidator = (req, res, next) => {
 
     return res.status(400).json(baseResponse);
   }
-  console.log(value);
   req.body = value;
-  req.body.slug = slugify(req.body.name, { lower: true });
   next();
 };
 
@@ -92,17 +86,11 @@ exports.updateUserValidator = (req, res, next) => {
   }
 
   req.body = value;
-  if (req.body.name) {
-    req.body.slug = slugify(req.body.name, { lower: true });
-  }
   next();
 };
 
 exports.changeUserPasswordValidator = async (req, res, next) => {
   const schema = Joi.object({
-    currentPassword: Joi.string()
-      .required()
-      .messages({ 'any.required': 'CurrentPassword is required' }),
     password: Joi.string().min(8).required().messages({
       'string.min': 'Password must be at least {#limit} characters',
       'any.required': 'Password is required'
@@ -121,12 +109,6 @@ exports.changeUserPasswordValidator = async (req, res, next) => {
       errors: error.details.map((d) => d.message)
     });
   }
-
-  const user = await User.findById(req.params.id);
-  if (!user) return next(new AppError('There is no user with this id', 404));
-  const match = await bcrypt.compare(value.currentPassword, user.password);
-  if (!match) return next(new AppError('Not correct password', 401));
-  user.password = req.body.currentPassword;
 
   req.body = value;
   next();
@@ -155,11 +137,6 @@ exports.updateMePasswordValidator = async (req, res, next) => {
       errors: error.details.map((d) => d.message)
     });
   }
-
-  const user = await User.findById(req.user._id);
-  const match = await bcrypt.compare(value.currentPassword, user.password);
-  if (!match) return next(new AppError('Not correct password', 401));
-  user.password = req.body.currentPassword;
 
   req.body = value;
   next();

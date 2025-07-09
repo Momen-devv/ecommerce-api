@@ -8,7 +8,7 @@ const {
   getAllBrands,
   getBrand,
   updateBrand,
-  deleteDelete,
+  deleteBrand,
   uploadBrandImage,
   reSizePhoto
 } = require('../controllers/brandController');
@@ -42,7 +42,7 @@ router
     authController.protect,
     authController.restricTo('admin', 'manager'),
     mongoIdValidator,
-    deleteDelete
+    deleteBrand
   );
 
 module.exports = router;

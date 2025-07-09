@@ -43,9 +43,9 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
 
 exports.createProduct = factory.createOne(Product);
 
-exports.getAllProducts = factory.getAll(Product, 'Products');
+exports.getAllProducts = factory.getAll(Product);
 
-exports.getProduct = factory.getOne(Product);
+exports.getProduct = factory.getOne(Product, 'reviews');
 
 exports.updateProduct = factory.updateOne(Product);
 

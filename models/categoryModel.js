@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
 
 const categorySchema = new mongoose.Schema(
   {
@@ -19,10 +20,29 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+categorySchema.pre('save', setSlugOnSave('name'));
+
+categorySchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
+
+// categorySchema.pre('save', function (next) {
+//   if (this.isModified('name')) {
+//     this.slug = slugify(this.name, { lower: true });
+//   }
+//   next();
+// });
+
+// categorySchema.pre('findOneAndUpdate', function (next) {
+//   const update = this.getUpdate();
+//   if (update.name) {
+//     update.slug = slugify(update.name, { lower: true });
+//     this.setUpdate(update);
+//   }
+//   next();
+// });
+
 const setImageURL = function (doc) {
   if (doc.image) {
-    imageURL = `${process.env.BASE_URL}/categories/${doc.image}`;
-    doc.image = imageURL;
+    doc.image = `${process.env.BASE_URL}/categories/${doc.image}`;
   }
 };
 

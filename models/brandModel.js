@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
 
 const brandSchema = new mongoose.Schema(
   {
@@ -19,10 +20,13 @@ const brandSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+brandSchema.pre('save', setSlugOnSave('name'));
+
+brandSchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
+
 const setImageURL = function (doc) {
   if (doc.image) {
-    imageURL = `${process.env.BASE_URL}/brands/${doc.image}`;
-    doc.image = imageURL;
+    doc.image = `${process.env.BASE_URL}/brands/${doc.image}`;
   }
 };
 

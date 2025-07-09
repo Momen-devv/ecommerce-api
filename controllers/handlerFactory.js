@@ -1,15 +1,14 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
-const slugify = require('slugify'); // لو محتاج تستخدمه في updateOne
 
-exports.createOne = (Model = {}) =>
+exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     if (!req.body.category && req.params.categoryId) {
       req.body.category = req.params.categoryId;
     }
 
-    const doc = await Model.create({ ...req.body });
+    const doc = await Model.create(req.body);
 
     res.status(201).json({
       status: 'success',
@@ -17,13 +16,15 @@ exports.createOne = (Model = {}) =>
     });
   });
 
-exports.getOne = (Model, populateOptions) =>
+exports.getOne = (Model, populationOpt) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
-    if (populateOptions) query = query.populate(populateOptions);
 
-    const doc = await query.exec();
+    if (populationOpt) {
+      query = query.populate(populationOpt);
+    }
 
+    const doc = await query;
     if (!doc) {
       return next(new AppError('No doc found with this ID', 404));
     }
@@ -47,7 +48,8 @@ exports.getAll = (Model, modelName = '') =>
       .paginate();
 
     const docs = await features.query;
-    const totalDocs = await Model.countDocuments(filter);
+    const filteredQuery = new APIFeatures(Model.find(filter), req.query).filter().search(modelName);
+    const totalDocs = await filteredQuery.query.clone().countDocuments();
     const totalPages = Math.ceil(totalDocs / features.pagination.limit);
 
     res.status(200).json({
@@ -64,10 +66,6 @@ exports.getAll = (Model, modelName = '') =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    if (req.body.name) {
-      req.body.slug = slugify(req.body.name, { lower: true });
-    }
-
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true

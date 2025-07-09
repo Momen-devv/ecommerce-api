@@ -10,6 +10,9 @@ const {
 } = require('../validators/user.validator');
 const authController = require('../controllers/authController');
 
+const checkUserExists = require('../Middlewares/checkUserExists');
+const checkCurrentPasswordCorrect = require('../Middlewares/checkCurrentPasswordCorrect');
+
 const {
   createUser,
   getAllUsers,
@@ -32,13 +35,15 @@ router.use(authController.protect);
 router.route('/me').get(getMe, getUser);
 router.route('/deleteMe').delete(deleteMe);
 router.route('/updateMe').patch(uploadUserImage, reSizePhoto, updateMeValidator, updateMe);
-router.route('/updateMePassword').patch(updateMePasswordValidator, updateMePassword);
+router
+  .route('/updateMePassword')
+  .patch(updateMePasswordValidator, checkCurrentPasswordCorrect, updateMePassword);
 
 router.use(authController.restricTo('admin'));
 
 router
   .route('/changeUserPassword/:id')
-  .patch(mongoIdValidator, changeUserPasswordValidator, changeUserPassword);
+  .patch(mongoIdValidator, checkUserExists, changeUserPasswordValidator, changeUserPassword);
 
 router
   .route('/')

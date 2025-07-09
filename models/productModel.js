@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
 
 const productSchema = new mongoose.Schema(
   {
@@ -12,7 +13,6 @@ const productSchema = new mongoose.Schema(
 
     slug: {
       type: String,
-      required: [true, 'Product slug is required'],
       lowercase: true
     },
 
@@ -83,7 +83,9 @@ const productSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -94,6 +96,16 @@ productSchema.pre(/^find/, function (next) {
   });
   next();
 });
+
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'product',
+  localField: '_id'
+});
+
+productSchema.pre('save', setSlugOnSave('title'));
+
+productSchema.pre('findOneAndUpdate', setSlugOnUpdate('title'));
 
 const setImageURL = function (doc) {
   if (doc.imageCover) {

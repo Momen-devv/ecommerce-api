@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const slugify = require('slugify');
 
 exports.createBrandValidator = (req, res, next) => {
   const schema = Joi.object({
@@ -30,7 +29,6 @@ exports.createBrandValidator = (req, res, next) => {
   }
 
   req.body = value;
-  req.body.slug = slugify(req.body.name);
   next();
 };
 
@@ -61,10 +59,5 @@ exports.updateBrandValidator = (req, res, next) => {
   }
 
   req.body = value;
-
-  if (req.body.name) {
-    req.body.slug = slugify(req.body.name);
-  }
-
   next();
 };

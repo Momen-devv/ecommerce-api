@@ -2,7 +2,8 @@ const crypto = require('crypto');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const slugify = require('slugify');
+
+const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
 
 const userSchema = mongoose.Schema(
   {
@@ -59,21 +60,9 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-userSchema.pre('save', function (next) {
-  if (this.isModified('name')) {
-    this.slug = slugify(this.name, { lower: true });
-  }
-  next();
-});
+userSchema.pre('save', setSlugOnSave('name'));
 
-userSchema.pre('findOneAndUpdate', function (next) {
-  const update = this.getUpdate();
-  if (update.name) {
-    update.slug = slugify(update.name, { lower: true });
-    this.setUpdate(update);
-  }
-  next();
-});
+userSchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
@@ -81,9 +70,8 @@ userSchema.pre(/^find/, function (next) {
 });
 
 const setImageURL = function (doc) {
-  if (doc.profileImage) {
-    const imageURL = `${process.env.BASE_URL}/users/${doc.profileImage}`;
-    doc.profileImage = imageURL;
+  if (doc.profileImage && !doc.profileImage.startsWith('http')) {
+    doc.profileImage = `${process.env.BASE_URL}/users/${doc.profileImage}`;
   }
 };
 

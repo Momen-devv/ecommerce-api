@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const slugify = require('slugify');
 
 exports.createSubCategoryValidator = (req, res, next) => {
   const schema = Joi.object({
@@ -36,7 +35,6 @@ exports.createSubCategoryValidator = (req, res, next) => {
   }
 
   req.body = value;
-  req.body.slug = slugify(req.body.name);
   next();
 };
 
@@ -74,10 +72,5 @@ exports.updateSubCategoryValidator = (req, res, next) => {
   }
 
   req.body = value;
-
-  if (req.body.name) {
-    req.body.slug = slugify(req.body.name);
-  }
-
   next();
 };

@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const slugify = require('slugify');
 
 exports.createProductValidator = (req, res, next) => {
   const schema = Joi.object({
@@ -67,11 +66,6 @@ exports.createProductValidator = (req, res, next) => {
     return res.status(400).json(baseResponse);
   }
 
-  delete req.body.slug;
-
-  if (req.body.title) {
-    req.body.slug = slugify(req.body.title, { lower: true });
-  }
   next();
 };
 
@@ -134,10 +128,5 @@ exports.updateProductValidator = (req, res, next) => {
     return res.status(400).json(baseResponse);
   }
 
-  delete req.body.slug;
-
-  if (req.body.title) {
-    req.body.slug = slugify(req.body.title, { lower: true });
-  }
   next();
 };

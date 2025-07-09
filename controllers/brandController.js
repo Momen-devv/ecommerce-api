@@ -28,4 +28,4 @@ exports.getBrand = factory.getOne(Brand);
 
 exports.updateBrand = factory.updateOne(Brand);
 
-exports.deleteDelete = factory.deleteOne(Brand);
+exports.deleteBrand = factory.deleteOne(Brand);

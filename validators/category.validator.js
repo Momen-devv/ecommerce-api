@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const slugify = require('slugify');
 
 exports.createCategoryValidator = (req, res, next) => {
   const schema = Joi.object({
@@ -29,7 +28,6 @@ exports.createCategoryValidator = (req, res, next) => {
   }
 
   req.body = value;
-  req.body.slug = slugify(req.body.name);
   next();
 };
 
@@ -60,10 +58,5 @@ exports.updateCategoryValidator = (req, res, next) => {
   }
 
   req.body = value;
-
-  if (req.body.name) {
-    req.body.slug = slugify(req.body.name);
-  }
-
   next();
 };

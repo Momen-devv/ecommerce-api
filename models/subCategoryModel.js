@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
+
 const subCategorySchema = new mongoose.Schema(
   {
     name: {
@@ -21,6 +23,10 @@ const subCategorySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+subCategorySchema.pre('save', setSlugOnSave('name'));
+
+subCategorySchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 
 const SubCategory = mongoose.model('SubCategory', subCategorySchema);
 
