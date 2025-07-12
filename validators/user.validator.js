@@ -177,3 +177,76 @@ exports.updateMeValidator = (req, res, next) => {
   req.body = value;
   next();
 };
+
+exports.addAddressValidator = (req, res, next) => {
+  const schema = Joi.object({
+    location: Joi.string().trim().required().messages({
+      'string.base': 'Location must be a string.',
+      'any.required': 'Please provide a location.'
+    }),
+    phone: Joi.string()
+      .trim()
+      .pattern(/^\+?[0-9]{10,15}$/)
+      .required()
+      .messages({
+        'string.pattern.base': 'Phone number must be valid (10 to 15 digits, optional +).',
+        'any.required': 'Phone number is required.'
+      }),
+    city: Joi.string().trim().required().messages({
+      'string.base': 'City must be a string.',
+      'any.required': 'Please provide a city.'
+    }),
+    label: Joi.string().valid('home', 'work', 'other').default('home').messages({
+      'any.only': 'Label must be either "home", "work", or "other".',
+      'string.base': 'Label must be a string.'
+    })
+  });
+
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
+
+  if (error) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid address data.',
+      errors: error.details.map((d) => d.message)
+    });
+  }
+
+  req.body = value;
+  next();
+};
+
+exports.updateAddressValidator = (req, res, next) => {
+  const schema = Joi.object({
+    location: Joi.string().trim().optional().messages({
+      'string.base': 'Location must be a string.'
+    }),
+    phone: Joi.string()
+      .trim()
+      .pattern(/^\+?[0-9]{10,15}$/)
+      .optional()
+      .messages({
+        'string.pattern.base': 'Phone number must be valid (10 to 15 digits, optional +).'
+      }),
+    city: Joi.string().trim().optional().messages({
+      'string.base': 'City must be a string.'
+    }),
+    label: Joi.string().valid('home', 'work', 'other').optional().messages({
+      'any.only': 'Label must be either "home", "work", or "other".',
+      'string.base': 'Label must be a string.'
+    })
+  });
+
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
+
+  if (error) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data for updating address.',
+      errors: error.details.map((d) => d.message)
+    });
+  }
+
+  req.body = value;
+  next();
+};

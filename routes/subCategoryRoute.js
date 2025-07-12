@@ -15,16 +15,18 @@ const {
   updateSubCategory,
   getAllSubCategories,
   getSubCategory,
-  deleteSubCategory
+  deleteSubCategory,
+  setCategoryIdToBody,
+  createFilterObj
 } = require('../controllers/subCategoryController');
 
-// Routes
 router
   .route('/')
-  .get(getAllSubCategories)
+  .get(createFilterObj, getAllSubCategories)
   .post(
     authController.protect,
     authController.restricTo('admin', 'manager'),
+    setCategoryIdToBody,
     createSubCategoryValidator,
     checkCategoryExists,
     createSubCategory
@@ -39,9 +41,12 @@ router
     updateSubCategoryValidator,
     checkCategoryExists,
     updateSubCategory
-  ).delete;
-(authController.protect,
-  authController.restricTo('admin', 'manager'),
-  (mongoIdValidator, deleteSubCategory));
+  )
+  .delete(
+    authController.protect,
+    authController.restricTo('admin', 'manager'),
+    mongoIdValidator,
+    deleteSubCategory
+  );
 
 module.exports = router;

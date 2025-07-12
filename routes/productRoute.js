@@ -10,6 +10,7 @@ const {
   updateProductValidator
 } = require('../validators/product.validator');
 const authController = require('../controllers/authController');
+const reviewRoute = require('./reviewRoute');
 
 const {
   createProduct,
@@ -22,6 +23,8 @@ const {
 } = require('../controllers/productController');
 
 const router = express.Router();
+
+router.use('/:productId/reviews', reviewRoute);
 
 router
   .route('/')

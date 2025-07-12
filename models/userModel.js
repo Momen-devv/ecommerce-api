@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
+const { type } = require('os');
 
 const userSchema = mongoose.Schema(
   {
@@ -42,7 +43,26 @@ const userSchema = mongoose.Schema(
     passwordResetToken: String,
     passwordResetOTP: String,
     passwordResetExpires: Date,
-    passwordResetVerified: Boolean
+    passwordResetVerified: Boolean,
+
+    wishlist: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Product'
+      }
+    ],
+    addresses: [
+      {
+        location: String,
+        phone: String,
+        city: String,
+        label: {
+          type: String,
+          enum: ['home', 'work', 'other'],
+          default: 'home'
+        }
+      }
+    ]
   },
   { timestamps: true }
 );

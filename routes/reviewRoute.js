@@ -2,6 +2,7 @@ const express = require('express');
 const { mongoIdValidator } = require('../validators/commonValidators');
 const checkProductExists = require('../Middlewares/checkProductExists');
 const setUserId = require('../Middlewares/setUserId');
+const verifyReviewOwner = require('../Middlewares/verifyReviewOwner.js');
 const authController = require('../controllers/authController');
 const { createReviewValidator, updateReviewValidator } = require('../validators/review.validator');
 
@@ -10,17 +11,20 @@ const {
   getAllReviews,
   getReview,
   updateReview,
-  deleteReview
+  deleteReview,
+  setProductIdToBody,
+  createFilterObj
 } = require('../controllers/reviewController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(getAllReviews)
+  .get(createFilterObj, getAllReviews)
   .post(
     authController.protect,
     authController.restricTo('user'),
+    setProductIdToBody,
     createReviewValidator,
     setUserId,
     checkProductExists,
@@ -33,6 +37,7 @@ router
   .patch(
     mongoIdValidator,
     authController.protect,
+    verifyReviewOwner,
     authController.restricTo('user'),
     updateReviewValidator,
     updateReview

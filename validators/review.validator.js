@@ -20,7 +20,7 @@ exports.createReviewValidator = (req, res, next) => {
     })
   });
 
-  const { error } = schema.validate(req.body, { abortEarly: false });
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     const baseResponse = {
@@ -31,7 +31,7 @@ exports.createReviewValidator = (req, res, next) => {
 
     return res.status(400).json(baseResponse);
   }
-
+  req.body = value;
   next();
 };
 
@@ -48,7 +48,7 @@ exports.updateReviewValidator = (req, res, next) => {
     })
   });
 
-  const { error } = schema.validate(req.body, { abortEarly: false });
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     const baseResponse = {
@@ -59,6 +59,6 @@ exports.updateReviewValidator = (req, res, next) => {
 
     return res.status(400).json(baseResponse);
   }
-
+  req.body = value;
   next();
 };

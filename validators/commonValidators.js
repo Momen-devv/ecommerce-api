@@ -8,9 +8,12 @@ exports.mongoIdValidator = (req, res, next) => {
       .messages({
         'string.base': 'ID must be a string',
         'string.empty': 'ID cannot be empty',
-        'string.pattern.base': 'ID must be a valid MongoDB ObjectId',
+        'string.pattern.base': 'ID must be a valid ObjectId',
         'any.required': 'ID is required'
-      })
+      }),
+    // For Nested Route
+    productId: Joi.string().optional(),
+    categoryId: Joi.string().optional()
   });
 
   const { error } = schema.validate(req.params, { abortEarly: false });

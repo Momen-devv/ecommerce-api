@@ -11,10 +11,12 @@ exports.createSubCategoryValidator = (req, res, next) => {
     }),
     category: Joi.string()
       .pattern(/^[0-9a-fA-F]{24}$/)
+      .required()
       .messages({
-        'string.pattern.base': 'Category ID must be a valid MongoDB ObjectId',
+        'string.pattern.base': 'Category ID must be a valid ObjectId',
         'string.base': 'Category ID must be a string',
-        'string.empty': 'Category ID cannot be empty'
+        'string.empty': 'Category ID cannot be empty',
+        'any.required': 'Subcategory must belong to a category.'
       })
   })
     .or('name', 'category')
