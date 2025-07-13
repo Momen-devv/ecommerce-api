@@ -21,8 +21,10 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
+// Nested route for subcategories
 router.use('/:categoryId/subcategories', subCategoryRoute);
 
+// Routes for /api/v1/categories
 router
   .route('/')
   .get(getAllCategories)
@@ -35,6 +37,7 @@ router
     createCategory
   );
 
+// Routes for /api/v1/categories/:id
 router
   .route('/:id')
   .get(mongoIdValidator, getCategory)

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
 
 const subCategorySchema = new mongoose.Schema(
@@ -24,10 +23,9 @@ const subCategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Set slug on create and update
 subCategorySchema.pre('save', setSlugOnSave('name'));
-
 subCategorySchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 
 const SubCategory = mongoose.model('SubCategory', subCategorySchema);
-
 module.exports = SubCategory;

@@ -1,5 +1,4 @@
 const express = require('express');
-
 const {
   signupValidator,
   loginValidator,
@@ -19,6 +18,7 @@ const {
 
 const router = express.Router();
 
+// Auth Routes
 router.post('/signup', signupValidator, signup);
 router.post('/login', loginValidator, login);
 router.get('/logout', logout);

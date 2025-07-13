@@ -7,7 +7,6 @@ const {
   createSubCategoryValidator,
   updateSubCategoryValidator
 } = require('../validators/subCategory.validator');
-
 const authController = require('../controllers/authController');
 
 const {
@@ -20,6 +19,7 @@ const {
   createFilterObj
 } = require('../controllers/subCategoryController');
 
+// GET all subcategories or POST a new one (optionally under a specific category)
 router
   .route('/')
   .get(createFilterObj, getAllSubCategories)
@@ -32,6 +32,7 @@ router
     createSubCategory
   );
 
+// GET, UPDATE or DELETE a specific subcategory
 router
   .route('/:id')
   .get(mongoIdValidator, getSubCategory)

@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const { setSlugOnSave, setSlugOnUpdate } = require('../utils/modelHelpers');
-const { type } = require('os');
 
 const userSchema = mongoose.Schema(
   {
@@ -67,28 +66,31 @@ const userSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+// Hash password before saving to DB
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
-
   next();
 });
 
+// Set passwordChangedAt for JWT invalidation
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next();
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
+// Generate slug from name
 userSchema.pre('save', setSlugOnSave('name'));
-
 userSchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 
+// Exclude inactive users from queries
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   next();
 });
 
+// Add full image URL if not already full
 const setImageURL = function (doc) {
   if (doc.profileImage && !doc.profileImage.startsWith('http')) {
     doc.profileImage = `${process.env.BASE_URL}/users/${doc.profileImage}`;
@@ -103,6 +105,7 @@ userSchema.post('save', function () {
   setImageURL(this);
 });
 
+// Check if password changed after JWT was issued
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
@@ -111,19 +114,23 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
+// Generate password reset token and OTP
 userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
   const secret = process.env.CRYPTO_SECRET;
 
+  // Hash reset token before saving
   this.passwordResetToken = crypto.createHmac('sha256', secret).update(resetToken).digest('hex');
 
+  // Generate and hash OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
   this.passwordResetOTP = crypto.createHmac('sha256', secret).update(otp).digest('hex');
 
+  // Set expiry time
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   this.passwordResetVerified = false;
 
+  // Return original (unhashed) values to send to user
   return { resetToken, otp };
 };
 

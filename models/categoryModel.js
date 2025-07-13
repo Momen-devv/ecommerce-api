@@ -20,26 +20,11 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Generate slug before save/update
 categorySchema.pre('save', setSlugOnSave('name'));
-
 categorySchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 
-// categorySchema.pre('save', function (next) {
-//   if (this.isModified('name')) {
-//     this.slug = slugify(this.name, { lower: true });
-//   }
-//   next();
-// });
-
-// categorySchema.pre('findOneAndUpdate', function (next) {
-//   const update = this.getUpdate();
-//   if (update.name) {
-//     update.slug = slugify(update.name, { lower: true });
-//     this.setUpdate(update);
-//   }
-//   next();
-// });
-
+// Add full image URL after retrieving or saving
 const setImageURL = function (doc) {
   if (doc.image) {
     doc.image = `${process.env.BASE_URL}/categories/${doc.image}`;
@@ -55,5 +40,4 @@ categorySchema.post('save', function () {
 });
 
 const Category = mongoose.model('Category', categorySchema);
-
 module.exports = Category;

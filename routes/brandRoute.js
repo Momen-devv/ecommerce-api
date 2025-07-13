@@ -15,17 +15,19 @@ const {
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(getAllBrands)
-  .post(
-    authController.protect,
-    authController.restricTo('admin', 'manager'),
-    uploadBrandImage,
-    reSizePhoto,
-    createBrandValidator,
-    createBrand
-  );
+// Public routes
+router.route('/').get(getAllBrands);
+
+// Protected routes (admin/manager only)
+router.post(
+  '/',
+  authController.protect,
+  authController.restricTo('admin', 'manager'),
+  uploadBrandImage,
+  reSizePhoto,
+  createBrandValidator,
+  createBrand
+);
 
 router
   .route('/:id')

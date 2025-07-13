@@ -1,5 +1,4 @@
 const express = require('express');
-
 const {
   addProductToWishlist,
   deleteProductFromWishlist,
@@ -10,6 +9,7 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
+// Protect all routes & allow only users
 router.use(authController.protect, authController.restricTo('user'));
 
 router.route('/').get(getWishlist);

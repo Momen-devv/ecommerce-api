@@ -20,10 +20,11 @@ const brandSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Generate slug before save/update
 brandSchema.pre('save', setSlugOnSave('name'));
-
 brandSchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 
+// Add full image URL after retrieving or saving
 const setImageURL = function (doc) {
   if (doc.image) {
     doc.image = `${process.env.BASE_URL}/brands/${doc.image}`;
@@ -39,5 +40,4 @@ brandSchema.post('save', function () {
 });
 
 const Brand = mongoose.model('Brand', brandSchema);
-
 module.exports = Brand;

@@ -4,11 +4,13 @@ const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const { uploadMixOfImages } = require('../Middlewares/uploadImage');
 
+// Handle image upload (cover + multiple images)
 exports.uploadProductImages = uploadMixOfImages([
   { name: 'imageCover', maxCount: 1 },
   { name: 'images', maxCount: 8 }
 ]);
 
+// Resize and save uploaded images
 exports.resizeProductImages = catchAsync(async (req, res, next) => {
   if (req.files.imageCover) {
     const imageCoverFileName = `product-${Math.round(Math.random() * 1e9)}-${Date.now()}-cover.jpeg`;
@@ -24,6 +26,7 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
 
   if (req.files.images) {
     req.body.images = [];
+
     await Promise.all(
       req.files.images.map(async (img, index) => {
         const imagesName = `product-${Math.round(Math.random() * 1e9)}-${Date.now()}-${index + 1}.jpeg`;
@@ -41,12 +44,9 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
   next();
 });
 
+// CRUD operations
 exports.createProduct = factory.createOne(Product);
-
 exports.getAllProducts = factory.getAll(Product);
-
-exports.getProduct = factory.getOne(Product, 'reviews');
-
+exports.getProduct = factory.getOne(Product, 'reviews'); // populate reviews
 exports.updateProduct = factory.updateOne(Product);
-
 exports.deleteProduct = factory.deleteOne(Product);

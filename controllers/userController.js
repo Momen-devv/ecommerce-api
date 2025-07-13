@@ -5,14 +5,15 @@ const sharp = require('sharp');
 const { uploadSingleImage } = require('../Middlewares/uploadImage');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
-
 const jwt = require('jsonwebtoken');
 
+// Generate JWT token
 const createToken = (id) =>
   jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 
+// Create and send JWT token in cookie
 const createSendToken = (user, statusCode, req, res) => {
   const token = createToken(user._id);
 
@@ -27,14 +28,14 @@ const createSendToken = (user, statusCode, req, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
-    data: {
-      user
-    }
+    data: { user }
   });
 };
 
+// Upload user image middleware
 exports.uploadUserImage = uploadSingleImage('profileImage');
 
+// Resize uploaded user image
 exports.reSizePhoto = catchAsync(async (req, res, next) => {
   const fileName = `user-${Math.round(Math.random() * 1e9)}-${Date.now()}.jpeg`;
 
@@ -50,14 +51,13 @@ exports.reSizePhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
+// Admin actions
 exports.createUser = factory.createOne(User);
-
 exports.getAllUsers = factory.getAll(User);
-
 exports.getUser = factory.getOne(User);
-
 exports.deleteUser = factory.deleteOne(User);
 
+// Admin update user profile
 exports.updateUser = catchAsync(async (req, res, next) => {
   const doc = await User.findByIdAndUpdate(
     req.params.id,
@@ -75,15 +75,12 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     }
   );
 
-  if (!doc) {
-    return next(new AppError('No doc found with this ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: doc
-  });
+  if (!doc) return next(new AppError('No doc found with this ID', 404));
+
+  res.status(200).json({ status: 'success', data: doc });
 });
 
+// Admin change user password
 exports.changeUserPassword = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
@@ -91,35 +88,30 @@ exports.changeUserPassword = catchAsync(async (req, res, next) => {
       password: await bcrypt.hash(req.body.password, 12),
       passwordChangedAt: Date.now()
     },
-    {
-      new: true
-    }
+    { new: true }
   );
 
-  if (!user) {
-    return next(new AppError('No doc found with this ID', 404));
-  }
+  if (!user) return next(new AppError('No doc found with this ID', 404));
+
   await user.save();
-  res.status(200).json({
-    status: 'success',
-    data: user
-  });
+
+  res.status(200).json({ status: 'success', data: user });
 });
 
+// Middleware to attach current user ID to req.params
 exports.getMe = catchAsync(async (req, res, next) => {
   req.params.id = req.user._id;
   next();
 });
 
+// Deactivate current user account
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user._id, { active: false });
 
-  res.status(204).json({
-    status: 'success',
-    date: null
-  });
+  res.status(204).json({ status: 'success', data: null });
 });
 
+// User updates their own password
 exports.updateMePassword = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
@@ -127,19 +119,16 @@ exports.updateMePassword = catchAsync(async (req, res, next) => {
       password: await bcrypt.hash(req.body.password, 12),
       passwordChangedAt: Date.now()
     },
-    {
-      new: true
-    }
+    { new: true }
   );
 
-  if (!user) {
-    return next(new AppError('No doc found with this ID', 404));
-  }
-  await user.save();
+  if (!user) return next(new AppError('No doc found with this ID', 404));
 
+  await user.save();
   createSendToken(user, 200, req, res);
 });
 
+// User updates their own profile data
 exports.updateMe = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
@@ -152,12 +141,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     { new: true }
   );
 
-  if (!user) {
-    return next(new AppError('No doc found with this ID', 404));
-  }
+  if (!user) return next(new AppError('No doc found with this ID', 404));
 
-  res.status(200).json({
-    status: 'success',
-    data: user
-  });
+  res.status(200).json({ status: 'success', data: user });
 });

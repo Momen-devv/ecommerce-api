@@ -1,6 +1,5 @@
 const express = require('express');
 const { mongoIdValidator } = require('../validators/commonValidators');
-
 const {
   createUserValidator,
   updateUserValidator,
@@ -8,8 +7,8 @@ const {
   updateMePasswordValidator,
   updateMeValidator
 } = require('../validators/user.validator');
-const authController = require('../controllers/authController');
 
+const authController = require('../controllers/authController');
 const checkUserExists = require('../Middlewares/checkUserExists');
 const checkCurrentPasswordCorrect = require('../Middlewares/checkCurrentPasswordCorrect');
 
@@ -30,8 +29,10 @@ const {
 
 const router = express.Router();
 
+// Protected routes (accessible only if logged in)
 router.use(authController.protect);
 
+// Current logged-in user routes
 router.route('/me').get(getMe, getUser);
 router.route('/deleteMe').delete(deleteMe);
 router.route('/updateMe').patch(uploadUserImage, reSizePhoto, updateMeValidator, updateMe);
@@ -39,12 +40,15 @@ router
   .route('/updateMePassword')
   .patch(updateMePasswordValidator, checkCurrentPasswordCorrect, updateMePassword);
 
+// Admin-only routes
 router.use(authController.restricTo('admin'));
 
+// Admin password update for a specific user
 router
   .route('/changeUserPassword/:id')
   .patch(mongoIdValidator, checkUserExists, changeUserPasswordValidator, changeUserPassword);
 
+// CRUD routes for users (admin)
 router
   .route('/')
   .get(getAllUsers)

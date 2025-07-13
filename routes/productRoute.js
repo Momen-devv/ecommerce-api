@@ -24,8 +24,10 @@ const {
 
 const router = express.Router();
 
+// Nested route: /products/:productId/reviews
 router.use('/:productId/reviews', reviewRoute);
 
+// /api/v1/products
 router
   .route('/')
   .get(getAllProducts)
@@ -43,6 +45,7 @@ router
     createProduct
   );
 
+// /api/v1/products/:id
 router
   .route('/:id')
   .get(mongoIdValidator, getProduct)

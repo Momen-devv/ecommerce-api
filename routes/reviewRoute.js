@@ -18,6 +18,7 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
+// GET all reviews, or POST new review to a product
 router
   .route('/')
   .get(createFilterObj, getAllReviews)
@@ -31,6 +32,7 @@ router
     createReview
   );
 
+// GET, UPDATE, or DELETE specific review by ID
 router
   .route('/:id')
   .get(mongoIdValidator, getReview)
