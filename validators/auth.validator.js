@@ -77,18 +77,17 @@ exports.loginValidator = (req, res, next) => {
 
 exports.forgotPasswordValidator = (req, res, next) => {
   const schema = Joi.object({
-    email: Joi.string().email().required().messages({
-      'string.email': 'Please enter a valid email',
-      'any.required': 'Email is required'
-    })
-  });
+    email: Joi.string().email(),
+    phone: Joi.string().pattern(/^\+[1-9]\d{1,14}$/)
+  }).or('email', 'phone');
 
   const { error, value } = schema.validate(req.body);
 
   if (error) {
     return res.status(400).json({
       status: 'fail',
-      message: error.details[0].message
+      message: 'Invalid input data',
+      details: error.details.map((e) => e.message)
     });
   }
 
@@ -98,8 +97,10 @@ exports.forgotPasswordValidator = (req, res, next) => {
 
 exports.verifyResetCodeValidator = (req, res, next) => {
   const schema = Joi.object({
-    resetOTP: Joi.string().optional()
-  });
+    resetOTP: Joi.string().optional(),
+    email: Joi.string().email(),
+    phone: Joi.string().pattern(/^\+[1-9]\d{1,14}$/)
+  }).or('email', 'phone');
 
   const { error, value } = schema.validate(req.body, { abortEarly: false });
 
@@ -117,10 +118,8 @@ exports.verifyResetCodeValidator = (req, res, next) => {
 
 exports.resetPasswordValidator = (req, res, next) => {
   const schema = Joi.object({
-    email: Joi.string().email().required().messages({
-      'string.email': 'Please enter a valid email',
-      'any.required': 'Email is required'
-    }),
+    email: Joi.string().email(),
+    phone: Joi.string().pattern(/^\+[1-9]\d{1,14}$/),
     newPassword: Joi.string().min(8).required().messages({
       'string.min': 'Password must be at least {#limit} characters',
       'any.required': 'Password is required'
@@ -129,14 +128,15 @@ exports.resetPasswordValidator = (req, res, next) => {
       .valid(Joi.ref('newPassword'))
       .required()
       .messages({ 'any.only': 'Passwords do not match' })
-  });
+  }).or('email', 'phone');
 
   const { error, value } = schema.validate(req.body);
 
   if (error) {
     return res.status(400).json({
       status: 'fail',
-      message: error.details[0].message
+      message: 'Invalid input data',
+      details: error.details.map((e) => e.message)
     });
   }
 

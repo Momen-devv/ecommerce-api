@@ -59,3 +59,6 @@ cartSchema.methods.updateCartTotals = async function () {
   this.shippingPrice = hasItems ? (this.totalPrice > 10000 ? 0 : 50) : 0;
   this.finalTotal = basePrice + this.shippingPrice;
 };
+
+const Cart = mongoose.model('Cart', cartSchema);
+module.exports = Cart;
