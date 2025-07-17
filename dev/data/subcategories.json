@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "4bab686cab2d41b6bebb5dcb",
+    "name": "Ultrabooks",
+    "category": "8692663bf33541fbb03fd546"
+  },
+  {
+    "_id": "60145f1a38c044f6a47909cb",
+    "name": "Gaming Monitors",
+    "category": "d2a7202aa4de476a900323d1"
+  },
+  {
+    "_id": "014741db66124055991704f9",
+    "name": "Power Banks",
+    "category": "d2a7202aa4de476a900323d1"
+  }
+]

@@ -1,0 +1,89 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        title= subject
+        style.
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                padding: 20px;
+            }
+            .container {
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                max-width: 600px;
+                margin: auto;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #28a745;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-top: 20px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            table, th, td {
+                border: 1px solid #ddd;
+            }
+            th, td {
+                padding: 12px;
+                text-align: left;
+            }
+            th {
+                background-color: #f0f0f0;
+            }
+            .summary {
+                margin-top: 20px;
+                font-size: 16px;
+            }
+            .footer {
+                margin-top: 40px;
+                font-size: 12px;
+                color: #888;
+                text-align: center;
+            }
+
+    body
+        .container
+            h1 Hello #{firstName} 👋,
+            p Thank you for your order! Here are the details:
+
+            if order.cartItems.length
+                table
+                    thead
+                        tr
+                            th Product
+                            th Color
+                            th Quantity
+                            th Price (EGP)
+                    tbody
+                        each item in order.cartItems
+                            tr
+                                td #{item.product.title}
+                                td #{item.color}
+                                td #{item.quantity}
+                                td #{item.price}
+
+            .summary
+                p Total Price: <strong>#{order.totalPrice} EGP</strong>
+                if order.totalPriceAfterDiscount
+                    p After Discount: <strong>#{order.totalPriceAfterDiscount} EGP</strong>
+                p Shipping: <strong>#{order.shippingPrice} EGP</strong>
+                p Tax (#{order.taxRate}%): <strong>#{order.taxAmount} EGP</strong>
+                p Final Total: <strong>#{order.finalTotal} EGP</strong>
+
+            p We'll notify you when your order is out for delivery 🚚
+
+            a.btn(href=url target="_blank") View Order Status
+            
+            .footer
+                p &copy; #{new Date().getFullYear()} E-commerce-API by Momen Elshamy

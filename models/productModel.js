@@ -97,7 +97,7 @@ productSchema.pre('findOneAndUpdate', setSlugOnUpdate('title'));
 
 // Convert image names to full URLs
 const setImageURL = function (doc) {
-  if (doc.imageCover) {
+  if (doc.imageCover && !doc.imageCover.startsWith('http')) {
     doc.imageCover = `${process.env.BASE_URL}/products/${doc.imageCover}`;
   }
   if (doc.images) {

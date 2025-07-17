@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Excellent product!",
+    "ratings": 5,
+    "user": "60f6b123b7c3f2a5a0d9b1b1",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a1"
+  },
+  {
+    "title": "Very satisfied",
+    "ratings": 4,
+    "user": "60f6b123b7c3f2a5a0d9b1b2",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a2"
+  },
+  {
+    "title": "Could be better",
+    "ratings": 3,
+    "user": "60f6b123b7c3f2a5a0d9b1b3",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a3"
+  },
+  {
+    "title": "Highly recommend",
+    "ratings": 5,
+    "user": "60f6b123b7c3f2a5a0d9b1b1",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a4"
+  },
+  {
+    "title": "Not worth the price",
+    "ratings": 2,
+    "user": "60f6b123b7c3f2a5a0d9b1b2",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a5"
+  },
+  {
+    "title": "Absolutely love it!",
+    "ratings": 5,
+    "user": "60f6b123b7c3f2a5a0d9b1b3",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a1"
+  },
+  {
+    "title": "Would buy again",
+    "ratings": 4,
+    "user": "60f6b123b7c3f2a5a0d9b1b1",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a2"
+  },
+  {
+    "title": "Good value for money",
+    "ratings": 4,
+    "user": "60f6b123b7c3f2a5a0d9b1b2",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a3"
+  },
+  {
+    "title": "Not impressed",
+    "ratings": 2,
+    "user": "60f6b123b7c3f2a5a0d9b1b3",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a4"
+  },
+  {
+    "title": "Top quality",
+    "ratings": 5,
+    "user": "60f6b123b7c3f2a5a0d9b1b1",
+    "product": "60f6a8f9b7c3f2a5a0d9a1a5"
+  }
+]

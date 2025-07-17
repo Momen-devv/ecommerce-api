@@ -1,0 +1,7 @@
+[
+  {
+    "freeShippingThreshold": 5000,
+    "shippingPrice": 100,
+    "taxRate": 14
+  }
+]

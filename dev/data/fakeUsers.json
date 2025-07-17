@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "60f6b123b7c3f2a5a0d9b1b1",
+    "name": "Momen Elshamy",
+    "email": "momen@example.com",
+    "password": "$2b$12$Yi6n75i1G.s0eOLoZ2XJauXCaOk0n8IeViVhgestTYUfIzHxFKYy2",
+    "profileImage": "default.jpg",
+    "role": "admin"
+  },
+  {
+    "_id": "60f6b123b7c3f2a5a0d9b1b2",
+    "name": "Sara Mahmoud",
+    "email": "sara@example.com",
+    "password": "$2b$12$YBzEY6YQtew2hEYmMVn.bem8nWJwSB4RWKxrxf.floZuQPbBURtjq",
+    "profileImage": "default.jpg",
+    "role": "user"
+  },
+  {
+    "_id": "60f6b123b7c3f2a5a0d9b1b3",
+    "name": "Youssef Adel",
+    "email": "youssef@example.com",
+    "password": "$2b$12$QiP.3Pi8DTyR39DkQyFy2uSKMv98CQLKCwZ5qTMBLIhNec2JXPc4S",
+    "profileImage": "default.jpg",
+    "role": "user"
+  }
+]

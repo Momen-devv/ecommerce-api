@@ -1,0 +1,27 @@
+[
+  {
+    "name": "SUMMER2025",
+    "discount": 30,
+    "expire": "2025-12-31T23:59:59.000Z"
+  },
+  {
+    "name": "WELCOME10",
+    "discount": 10,
+    "expire": "2025-09-30T23:59:59.000Z"
+  },
+  {
+    "name": "FREESHIP",
+    "discount": 15,
+    "expire": "2025-08-31T23:59:59.000Z"
+  },
+  {
+    "name": "BUYMORE20",
+    "discount": 20,
+    "expire": "2025-11-15T23:59:59.000Z"
+  },
+  {
+    "name": "VIP2025",
+    "discount": 40,
+    "expire": "2026-01-01T00:00:00.000Z"
+  }
+]

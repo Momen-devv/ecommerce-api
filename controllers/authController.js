@@ -41,7 +41,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password
   });
 
-  const url = `${req.protocol}://${req.get('host')}/me`;
+  const url = `${req.protocol}://${req.get('host')}/api/v1/users/me`;
   await new Email(newUser, url).sendWelcome(); // Send welcome email
 
   createSendToken(newUser, 201, req, res);
@@ -227,7 +227,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   }
 
   // Update password + clear reset fields
-  user.password = newPassword;
+  user.password = req.body.newPassword;
   user.passwordResetToken = undefined;
   user.passwordResetOTP = undefined;
   user.passwordResetExpires = undefined;

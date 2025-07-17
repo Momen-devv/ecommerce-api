@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+
+const Settings = require('../models/settingsModel');
 // Mongoose Cart Schema
 const cartSchema = mongoose.Schema(
   {
@@ -29,6 +31,8 @@ const cartSchema = mongoose.Schema(
       type: String,
       default: null
     },
+    taxRate: Number,
+    taxAmount: Number,
     finalTotal: Number
   },
   {
@@ -36,14 +40,12 @@ const cartSchema = mongoose.Schema(
   }
 );
 
-// Calculate total prices and shipping
+// Calculate total prices including coupon, tax, and shipping
 cartSchema.methods.updateCartTotals = async function () {
-  const hasItems = this.cartItems.length > 0;
-
-  // Total before discount
+  // Calculate total price (before discount)
   this.totalPrice = this.cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
-  // Apply coupon if valid
+  // Handle coupon discount (if applied)
   if (this.appliedCoupon) {
     const coupon = await mongoose.model('Coupon').findOne({ name: this.appliedCoupon });
     if (coupon && coupon.expire > Date.now()) {
@@ -54,10 +56,20 @@ cartSchema.methods.updateCartTotals = async function () {
     }
   }
 
-  // Shipping and final total
+  // Load dynamic settings (tax, shipping, free shipping threshold)
+  const settings = await Settings.findOne();
+
   const basePrice = this.totalPriceAfterDiscount || this.totalPrice;
-  this.shippingPrice = hasItems ? (this.totalPrice > 10000 ? 0 : 50) : 0;
-  this.finalTotal = basePrice + this.shippingPrice;
+
+  // Tax calculation
+  this.taxRate = settings.taxRate;
+  this.taxAmount = +((basePrice * settings.taxRate) / 100).toFixed(2);
+
+  // Shipping calculation
+  this.shippingPrice = basePrice >= settings.freeShippingThreshold ? 0 : settings.shippingPrice;
+
+  // Final total = base + shipping + tax
+  this.finalTotal = +(basePrice + this.taxAmount + this.shippingPrice).toFixed(2);
 };
 
 const Cart = mongoose.model('Cart', cartSchema);

@@ -1,4 +1,4 @@
-const Cart = require('../models/CartModel');
+const Cart = require('../models/cartModel');
 const catchAsync = require('../utils/catchAsync');
 const Product = require('../models/productModel');
 const AppError = require('../utils/appError');
@@ -24,8 +24,12 @@ exports.addItemToCart = catchAsync(async (req, res, next) => {
   }
 
   const quantity = req.body.quantity || 1;
-  const price = product.price;
+  const price = product.priceAfterDiscount || product.price;
   const color = product.colors?.length > 0 ? req.body.color : undefined;
+
+  if (product.quantity < quantity) {
+    return next(new AppError('Not enough stock available', 400));
+  }
 
   let cart = await Cart.findOne({ user: req.user._id });
 
@@ -121,49 +125,75 @@ exports.clearCart = catchAsync(async (req, res, next) => {
 });
 
 // Update quantity of a specific item (or add it if not found)
-
 exports.updateCartItemQuantity = catchAsync(async (req, res, next) => {
   let cart = await Cart.findOne({ user: req.user._id });
   const product = await Product.findById(req.params.id);
   if (!product) return next(new AppError('No product found with this ID', 404));
 
   const hasColors = product.colors?.length > 0;
-  const color = hasColors ? req.body.color : undefined;
+  let color = hasColors ? req.body.color : undefined;
 
-  // Validate color requirements
+  // If product supports colors but no color is provided
   if (hasColors && !req.body.color) {
-    return next(new AppError('Color is required for this product.', 400));
+    const sameProductItems = cart?.cartItems.filter(
+      (item) => item.product.toString() === req.params.id
+    );
+
+    // If only one variant exists in the cart, use its color
+    if (sameProductItems?.length === 1) {
+      color = sameProductItems[0].color;
+    } else {
+      return next(
+        new AppError(
+          'Color is required because you have multiple variants of this product in the cart.',
+          400
+        )
+      );
+    }
   }
+
+  // If product does not support colors but color is sent
   if (!hasColors && req.body.color) {
     return next(new AppError('This product does not support colors', 400));
   }
-  if (hasColors && !product.colors.includes(req.body.color)) {
+
+  // If provided color is invalid
+  if (hasColors && color && !product.colors.includes(color)) {
     return next(
       new AppError(
-        `Color "${req.body.color}" is not available. Available: ${product.colors.join(', ')}`,
+        `Color "${color}" is not available. Available: ${product.colors.join(', ')}`,
         400
       )
     );
   }
+
+  // Quantity must be at least 1
   if (req.body.quantity < 1) {
     return next(new AppError('Quantity must be at least 1', 400));
   }
 
+  // Check available stock
+  if (product.quantity < req.body.quantity) {
+    return next(new AppError('Not enough stock available', 400));
+  }
+
+  const price = product.priceAfterDiscount || product.price;
+
   if (!cart) {
-    // Create new cart if not exists
+    // Create new cart if not found
     cart = await Cart.create({
       user: req.user._id,
       cartItems: [
         {
           product: req.params.id,
           quantity: req.body.quantity,
-          price: product.price,
+          price,
           ...(color && { color })
         }
       ]
     });
   } else {
-    // Update existing item or add new one
+    // Try to find the item with the same product and color
     const productIndex = cart.cartItems.findIndex(
       (item) =>
         item.product.toString() === req.params.id &&
@@ -171,17 +201,20 @@ exports.updateCartItemQuantity = catchAsync(async (req, res, next) => {
     );
 
     if (productIndex > -1) {
+      // If exists, update its quantity
       cart.cartItems[productIndex].quantity = req.body.quantity;
     } else {
+      // Otherwise, add as a new item
       cart.cartItems.push({
         product: req.params.id,
         quantity: req.body.quantity,
-        price: product.price,
+        price,
         ...(color && { color })
       });
     }
   }
 
+  // Recalculate totals and save
   await cart.updateCartTotals();
   await cart.save();
 
@@ -239,7 +272,7 @@ exports.removeCoupon = catchAsync(async (req, res, next) => {
 exports.getCart = catchAsync(async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id }).populate({
     path: 'cartItems.product',
-    select: 'title price imageCover colors'
+    select: 'title price priceAfterDiscount imageCover colors'
   });
 
   res.status(200).json({

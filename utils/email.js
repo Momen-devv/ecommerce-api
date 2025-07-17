@@ -3,11 +3,12 @@ const pug = require('pug');
 const { convert } = require('html-to-text');
 
 module.exports = class Email {
-  constructor(user, url, otp) {
+  constructor(user, url, otp, order) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
     this.otp = otp;
+    this.order = order;
     this.from = `E-commerce-App <${process.env.EMAIL_FROM}>`;
   }
 
@@ -37,6 +38,7 @@ module.exports = class Email {
       firstName: this.firstName,
       url: this.url,
       otp: this.otp,
+      order: this.order,
       subject
     });
 
@@ -56,5 +58,9 @@ module.exports = class Email {
 
   async sendWelcome() {
     await this.send('welcome', 'Welcome to Our App! We’re excited to have you');
+  }
+
+  async sendOrderEmail() {
+    await this.send('orderConfirmation', 'Your order has been placed successfully!');
   }
 };
