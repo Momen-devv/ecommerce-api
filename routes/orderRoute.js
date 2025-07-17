@@ -12,13 +12,16 @@ const {
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
-  getOrderById
+  getOrderById,
+  getCheckoutSession
 } = require('../controllers/orderController');
 
 const router = express.Router();
 
 // Protect all routes
 router.use(authController.protect);
+
+router.get('/create-checkout-session/:id', authController.restricTo('user'), getCheckoutSession);
 
 // Create order
 router.post('/', authController.restricTo('user'), createOrderValidator, createOrder);

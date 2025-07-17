@@ -1,3 +1,4 @@
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -155,5 +156,41 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: { order }
+  });
+});
+
+exports.getCheckoutSession = catchAsync(async (req, res, next) => {
+  const cart = await Cart.findById(req.params.id);
+  console.log(cart);
+  if (!cart) return next(new AppError('There is no cart with this ID', 404));
+
+  if (!cart.user.equals(req.user._id)) {
+    return next(new AppError('You are not allowed to pay for this cart', 403));
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    customer_email: req.user.email,
+    client_reference_id: cart._id.toString(),
+    line_items: [
+      {
+        price_data: {
+          currency: 'egp',
+          product_data: {
+            name: `cart ${cart._id}`
+          },
+          unit_amount: cart.finalTotal * 100
+        },
+        quantity: 1
+      }
+    ],
+    mode: 'payment',
+    success_url: `${req.protocol}://${req.get('host')}/cart-success?cart=${cart._id}`,
+    cancel_url: `${req.protocol}://${req.get('host')}/cart-cancelled?cart=${cart._id}`
+  });
+
+  res.status(200).json({
+    status: 'success',
+    session
   });
 });

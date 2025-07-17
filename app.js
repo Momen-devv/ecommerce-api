@@ -1,6 +1,7 @@
 const path = require('path');
-
 const express = require('express');
+const cors = require('cors');
+const compression = require('compression');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -12,12 +13,20 @@ const mountRoutes = require('./routes');
 
 const app = express();
 
-// Middlewar
+// 1) GLOBAL MIDDLEWARES
+// Implement CORS
+app.use(cors());
+
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors());
+
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(cookieParser());
+
+app.use(compression());
 
 mountRoutes(app);
 
