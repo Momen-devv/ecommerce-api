@@ -14,32 +14,10 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
   const user = await User.findById(req.user._id);
 
-  let shippingAddress;
-
-  if (req.body.shippingAddress) {
-    // No saved address, use one provided in the request
-    shippingAddress = req.body.shippingAddress;
-  } else if (user.addresses.length > 0) {
-    // Determine shipping address
-    // User has saved addresses
-    const index = Number(req.body.addressIndex);
-
-    if (typeof index === 'number' && index >= 0 && index < user.addresses.length) {
-      shippingAddress = user.addresses[index]; // Use selected address
-    } else {
-      shippingAddress = user.addresses[0]; // Default to the first address
-    }
-  } else {
-    // No saved or provided address
-    return next(
-      new AppError('No shipping address provided. Please add an address to continue.', 400)
-    );
-  }
-
   let order = await Order.create({
     user: req.user._id,
     cartItems: cart.cartItems,
-    shippingAddress,
+    shippingAddress: req.body.shippingAddress,
     paymentMethod: 'cash',
     isPaid: false,
     paidAt: null,
@@ -161,17 +139,22 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const cart = await Cart.findById(req.params.id);
-  console.log(cart);
   if (!cart) return next(new AppError('There is no cart with this ID', 404));
 
   if (!cart.user.equals(req.user._id)) {
     return next(new AppError('You are not allowed to pay for this cart', 403));
   }
 
+  console.log(req.body.shippingAddress);
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     customer_email: req.user.email,
     client_reference_id: cart._id.toString(),
+    metadata: {
+      userId: req.user._id.toString(),
+      shippingAddress: JSON.stringify(req.body.shippingAddress)
+    },
     line_items: [
       {
         price_data: {
@@ -185,12 +168,83 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
       }
     ],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/cart-success?cart=${cart._id}`,
-    cancel_url: `${req.protocol}://${req.get('host')}/cart-cancelled?cart=${cart._id}`
+    success_url: `${req.protocol}://${req.get('host')}/api/v1/orders/my-orders`,
+    cancel_url: `${req.protocol}://${req.get('host')}/api/v1/car/myCart`
   });
 
   res.status(200).json({
     status: 'success',
     session
   });
+});
+
+const createWebhookCheckout = async (session) => {
+  const cartId = session.client_reference_id;
+
+  const cart = await Cart.findById(cartId);
+
+  const shippingAddress = JSON.parse(session.metadata.shippingAddress);
+  const userId = session.metadata.userId;
+
+  if (cart.user.equals(userId)) {
+    const order = await Order.create({
+      user: userId,
+      cartItems: cart.cartItems,
+      paymentMethod: 'card',
+      isPaid: true,
+      paidAt: Date.now(),
+      status: 'paid',
+      shippingAddress,
+      totalPrice: cart.totalPrice,
+      totalPriceAfterDiscount: cart.totalPriceAfterDiscount || null,
+      shippingPrice: cart.shippingPrice,
+      taxRate: cart.taxRate,
+      taxAmount: cart.taxAmount,
+      finalTotal: cart.finalTotal
+    });
+
+    // Update product stock and sold count
+    if (order) {
+      const bulkUpdates = cart.cartItems.map((item) => ({
+        updateOne: {
+          filter: { _id: item.product },
+          update: {
+            $inc: {
+              sold: item.quantity,
+              quantity: -item.quantity
+            }
+          }
+        }
+      }));
+
+      await Product.bulkWrite(bulkUpdates);
+    }
+  }
+
+  // Delete cart after placing order
+  await Cart.findOneAndDelete({ user: userId });
+};
+
+exports.webhookCheckout = catchAsync(async (req, res, next) => {
+  let event = req.body;
+  // Only verify the event if you have an endpoint secret defined.
+  // Otherwise use the basic event deserialized with JSON.parse
+  if (process.env.STRIPE_WEBHOOK_SECRET) {
+    // Get the signature sent by Stripe
+    const signature = req.headers['stripe-signature'];
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.log(`⚠️  Webhook signature verification failed.`, err.message);
+      return res.sendStatus(400);
+    }
+  }
+
+  if (event.type === 'checkout.session.completed') createWebhookCheckout(event.data.object);
+
+  res.status(200).json({ received: true });
 });

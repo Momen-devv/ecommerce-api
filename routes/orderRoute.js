@@ -2,8 +2,11 @@ const express = require('express');
 const { mongoIdValidator } = require('../validators/commonValidators');
 const {
   createOrderValidator,
-  updateOrderStatusValidator
+  updateOrderStatusValidator,
+  checkoutValidation
 } = require('../validators/order.validator');
+
+const { validateShippingAddress } = require('../Middlewares/validateShippingAddress');
 
 const authController = require('../controllers/authController');
 const {
@@ -21,10 +24,22 @@ const router = express.Router();
 // Protect all routes
 router.use(authController.protect);
 
-router.get('/create-checkout-session/:id', authController.restricTo('user'), getCheckoutSession);
+router.get(
+  '/create-checkout-session/:id',
+  authController.restricTo('user'),
+  checkoutValidation,
+  validateShippingAddress,
+  getCheckoutSession
+);
 
 // Create order
-router.post('/', authController.restricTo('user'), createOrderValidator, createOrder);
+router.post(
+  '/',
+  authController.restricTo('user'),
+  createOrderValidator,
+  validateShippingAddress,
+  createOrder
+);
 
 // User: Get their own orders
 router.get('/my-orders', authController.restricTo('user'), getUserOrders);

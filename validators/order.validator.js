@@ -1,33 +1,37 @@
 const Joi = require('joi');
-const AppError = require('../utils/appError');
 
 // Middleware to validate creating an order
 exports.createOrderValidator = (req, res, next) => {
   const schema = Joi.object({
     shippingAddress: Joi.object({
-      location: Joi.string().min(3).max(200).messages({
-        'string.base': 'Location must be a string.',
-        'string.min': 'Location must be at least 3 characters long.',
-        'string.max': 'Location cannot exceed 200 characters.'
+      location: Joi.string().required().messages({
+        'string.base': 'Location must be a string',
+        'string.empty': 'Location is required',
+        'any.required': 'Location is required'
       }),
-      city: Joi.string().min(2).max(100).messages({
-        'string.base': 'City must be a string.',
-        'string.min': 'City must be at least 2 characters long.',
-        'string.max': 'City cannot exceed 100 characters.'
+      city: Joi.string().required().messages({
+        'string.base': 'City must be a string',
+        'string.empty': 'City is required',
+        'any.required': 'City is required'
       }),
-      phone: Joi.string().min(6).max(20).messages({
-        'string.base': 'Phone must be a string.',
-        'string.min': 'Phone number must be at least 6 digits.',
-        'string.max': 'Phone number cannot exceed 20 digits.'
-      }),
-      label: Joi.string().valid('home', 'work', 'other').messages({
-        'any.only': 'Label must be one of: home, work, or other.'
+      phone: Joi.string()
+        .pattern(/^\+?[0-9]{10,15}$/)
+        .required()
+        .messages({
+          'string.base': 'Phone must be a string',
+          'string.empty': 'Phone is required',
+          'any.required': 'Phone is required',
+          'string.pattern.base': 'Phone number must be 10–15 digits, optionally starting with +'
+        }),
+      label: Joi.string().valid('home', 'work', 'other').default('home').messages({
+        'any.only': 'Label must be either "home", "work", or "other".',
+        'string.base': 'Label must be a string.'
       })
-    }),
+    }).optional(),
 
-    addressIndex: Joi.number().min(0).messages({
-      'number.base': 'Address index must be a number.',
-      'number.min': 'Address index cannot be negative.'
+    addressIndex: Joi.number().min(0).optional().messages({
+      'number.base': 'Address index must be a number',
+      'number.min': 'Address index must be 0 or greater'
     })
   })
     .or('shippingAddress', 'addressIndex')
@@ -35,14 +39,19 @@ exports.createOrderValidator = (req, res, next) => {
       'object.missing': 'You must provide either a shipping address or an address index.'
     });
 
-  const { error } = schema.validate(req.body, { abortEarly: false });
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
-    return next(
-      new AppError(`Validation error: ${error.details.map((e) => e.message).join(', ')}`, 400)
-    );
+    const baseResponse = {
+      status: 'fail',
+      message: 'Invalid address data',
+      errors: error.details.map((d) => d.message)
+    };
+
+    return res.status(400).json(baseResponse);
   }
 
+  req.body = value;
   next();
 };
 
@@ -64,9 +73,68 @@ exports.updateOrderStatusValidator = (req, res, next) => {
     })
   });
 
-  const { error } = schema.validate(req.body);
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
 
-  if (error) return next(new AppError(error.details[0].message, 400));
+  if (error) {
+    const baseResponse = {
+      status: 'fail',
+      message: 'Invalid address data',
+      errors: error.details.map((d) => d.message)
+    };
 
+    return res.status(400).json(baseResponse);
+  }
+
+  req.body = value;
+  next();
+};
+
+exports.checkoutValidation = (req, res, next) => {
+  const schema = Joi.object({
+    shippingAddress: Joi.object({
+      location: Joi.string().required().messages({
+        'string.base': 'Location must be a string',
+        'string.empty': 'Location is required',
+        'any.required': 'Location is required'
+      }),
+      city: Joi.string().required().messages({
+        'string.base': 'City must be a string',
+        'string.empty': 'City is required',
+        'any.required': 'City is required'
+      }),
+      phone: Joi.string()
+        .pattern(/^\+?[0-9]{10,15}$/)
+        .required()
+        .messages({
+          'string.base': 'Phone must be a string',
+          'string.empty': 'Phone is required',
+          'any.required': 'Phone is required',
+          'string.pattern.base': 'Phone number must be 10–15 digits, optionally starting with +'
+        }),
+      label: Joi.string().valid('home', 'work', 'other').default('home').messages({
+        'any.only': 'Label must be either "home", "work", or "other".',
+        'string.base': 'Label must be a string.'
+      })
+    }).optional(),
+
+    addressIndex: Joi.number().min(0).optional().messages({
+      'number.base': 'Address index must be a number',
+      'number.min': 'Address index must be 0 or greater'
+    })
+  });
+
+  const { error, value } = schema.validate(req.body, { abortEarly: false });
+
+  if (error) {
+    const baseResponse = {
+      status: 'fail',
+      message: 'Invalid address data',
+      errors: error.details.map((d) => d.message)
+    };
+
+    return res.status(400).json(baseResponse);
+  }
+
+  req.body = value;
   next();
 };

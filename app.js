@@ -10,6 +10,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
 const mountRoutes = require('./routes');
+const { webhookCheckout } = require('./controllers/orderController');
 
 const app = express();
 
@@ -28,7 +29,13 @@ app.use(cookieParser());
 
 app.use(compression());
 
+app.post('/webhook-checkout', express.raw({ type: 'application/json' }), webhookCheckout);
+
 mountRoutes(app);
+
+app.get('/', (req, res) => {
+  res.send('e-commerce api is live 🚀');
+});
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
