@@ -1,15 +1,20 @@
 const express = require('express');
-const { mongoIdValidator } = require('../validators/commonValidators');
+
 const checkCategoryExists = require('../Middlewares/checkCategoryExists');
 const checkSubcategoriesExist = require('../Middlewares/checkSubcategoriesExists');
 const checkBrandExists = require('../Middlewares/checkBrandExists');
 const checkSubcategoriesBelongToCategory = require('../Middlewares/checkSubcategoriesBelongToCategory');
-const { subcategoriesToArray } = require('../Middlewares/subcategoriesToArray');
+const subcategoriesToArray = require('../Middlewares/subcategoriesToArray');
+const { deleteProductImages, deleteOldImagesIfUpdated } = require('../Middlewares/deleteImages');
+
+const { mongoIdValidator } = require('../validators/commonValidators');
 const {
   createProductValidator,
   updateProductValidator
 } = require('../validators/product.validator');
+
 const authController = require('../controllers/authController');
+
 const reviewRoute = require('./reviewRoute');
 
 const {
@@ -19,7 +24,7 @@ const {
   updateProduct,
   deleteProduct,
   uploadProductImages,
-  resizeProductImages
+  handleProductImagesUpload
 } = require('../controllers/productController');
 
 const router = express.Router();
@@ -35,13 +40,13 @@ router
     authController.protect,
     authController.restricTo('admin', 'manager'),
     uploadProductImages,
-    resizeProductImages,
     subcategoriesToArray,
     createProductValidator,
     checkCategoryExists,
     checkSubcategoriesExist,
     checkSubcategoriesBelongToCategory,
     checkBrandExists,
+    handleProductImagesUpload,
     createProduct
   );
 
@@ -54,19 +59,21 @@ router
     authController.restricTo('admin', 'manager'),
     mongoIdValidator,
     uploadProductImages,
-    resizeProductImages,
     subcategoriesToArray,
     updateProductValidator,
     checkCategoryExists,
     checkSubcategoriesExist,
     checkSubcategoriesBelongToCategory,
     checkBrandExists,
+    deleteOldImagesIfUpdated,
+    handleProductImagesUpload,
     updateProduct
   )
   .delete(
     authController.protect,
     authController.restricTo('admin', 'manager'),
     mongoIdValidator,
+    deleteProductImages,
     deleteProduct
   );
 

@@ -145,8 +145,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     return next(new AppError('You are not allowed to pay for this cart', 403));
   }
 
-  console.log(req.body.shippingAddress);
-
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     customer_email: req.user.email,

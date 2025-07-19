@@ -8,8 +8,24 @@
     "price": 32000,
     "priceAfterDiscount": 28999,
     "colors": ["silver", "space gray", "midnight"],
-    "imageCover": "macbook-air-m2.jpg",
-    "images": ["macbook-air-side.jpg", "macbook-air-open.jpg", "macbook-air-keyboard.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920496/ecommerce/products/product-cover-1752920491547.jpg",
+      "public_id": "ecommerce/products/product-cover-1752920491547"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920498/ecommerce/products/product-1752920495748-1.jpg",
+        "public_id": "ecommerce/products/product-1752920495748-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920498/ecommerce/products/product-1752920495784-2.jpg",
+        "public_id": "ecommerce/products/product-1752920495784-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920497/ecommerce/products/product-1752920495729-3.jpg",
+        "public_id": "ecommerce/products/product-1752920495729-3"
+      }
+    ],
     "category": "8692663bf33541fbb03fd546",
     "subcategories": ["4bab686cab2d41b6bebb5dcb"],
     "brand": "5119c987edaf484d8898c32f",
@@ -25,8 +41,24 @@
     "price": 37000,
     "priceAfterDiscount": 33999,
     "colors": ["phantom black", "green", "lavender"],
-    "imageCover": "galaxy-s23-ultra.jpg",
-    "images": ["galaxy-front.jpg", "galaxy-back.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920554/ecommerce/products/product-cover-1752920552067.jpg",
+      "public_id": "ecommerce/products/product-cover-1752920552067"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920556/ecommerce/products/product-1752920553891-1.jpg",
+        "public_id": "ecommerce/products/product-1752920553891-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920556/ecommerce/products/product-1752920553882-2.jpg",
+        "public_id": "ecommerce/products/product-1752920553882-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752920555/ecommerce/products/product-1752920553880-3.jpg",
+        "public_id": "ecommerce/products/product-1752920553880-3"
+      }
+    ],
     "category": "3a85be8105654003ad156b16",
     "subcategories": [],
     "brand": "3bf2e86ddf074363b59eb0a2",
@@ -42,8 +74,24 @@
     "price": 14999,
     "priceAfterDiscount": 12999,
     "colors": ["black", "silver"],
-    "imageCover": "sony-xm5.jpg",
-    "images": ["sony-xm5-side.jpg", "sony-xm5-case.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921192/ecommerce/products/product-cover-1752921190021.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921190021"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921193/ecommerce/products/product-1752921191811-1.jpg",
+        "public_id": "ecommerce/products/product-1752921191811-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921194/ecommerce/products/product-1752921191826-2.jpg",
+        "public_id": "ecommerce/products/product-1752921191826-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921194/ecommerce/products/product-1752921191820-3.jpg",
+        "public_id": "ecommerce/products/product-1752921191820-3"
+      }
+    ],
     "category": "d2a7202aa4de476a900323d1",
     "subcategories": [],
     "brand": "5119c987edaf484d8898c32f",
@@ -59,8 +107,24 @@
     "price": 3999,
     "priceAfterDiscount": 3599,
     "colors": ["graphite", "pale gray"],
-    "imageCover": "mx-master-3s.jpg",
-    "images": ["mx-master-side.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921536/ecommerce/products/product-cover-1752921533286.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921533286"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921537/ecommerce/products/product-1752921535065-1.jpg",
+        "public_id": "ecommerce/products/product-1752921535065-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921537/ecommerce/products/product-1752921535069-2.jpg",
+        "public_id": "ecommerce/products/product-1752921535069-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921537/ecommerce/products/product-1752921535097-3.jpg",
+        "public_id": "ecommerce/products/product-1752921535097-3"
+      }
+    ],
     "category": "d2a7202aa4de476a900323d1",
     "subcategories": [],
     "brand": "735ce8d818524eb59a535781",
@@ -76,8 +140,24 @@
     "price": 21000,
     "priceAfterDiscount": 18999,
     "colors": ["black"],
-    "imageCover": "lg-4k-monitor.jpg",
-    "images": ["lg-4k-side.jpg", "lg-4k-back.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921613/ecommerce/products/product-cover-1752921610287.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921610287"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921614/ecommerce/products/product-1752921612534-1.jpg",
+        "public_id": "ecommerce/products/product-1752921612534-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921615/ecommerce/products/product-1752921612541-2.jpg",
+        "public_id": "ecommerce/products/product-1752921612541-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921615/ecommerce/products/product-1752921612540-3.jpg",
+        "public_id": "ecommerce/products/product-1752921612540-3"
+      }
+    ],
     "category": "d2a7202aa4de476a900323d1",
     "subcategories": ["60145f1a38c044f6a47909cb"],
     "brand": "5119c987edaf484d8898c32f",
@@ -93,8 +173,24 @@
     "price": 42000,
     "priceAfterDiscount": 39999,
     "colors": ["deep purple", "silver", "gold"],
-    "imageCover": "iphone14pro.jpg",
-    "images": ["iphone14pro-front.jpg", "iphone14pro-back.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921403/ecommerce/products/product-cover-1752921400046.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921400046"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921404/ecommerce/products/product-1752921402286-1.jpg",
+        "public_id": "ecommerce/products/product-1752921402286-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921404/ecommerce/products/product-1752921402293-2.jpg",
+        "public_id": "ecommerce/products/product-1752921402293-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921404/ecommerce/products/product-1752921402291-3.jpg",
+        "public_id": "ecommerce/products/product-1752921402291-3"
+      }
+    ],
     "category": "3a85be8105654003ad156b16",
     "subcategories": [],
     "brand": "5119c987edaf484d8898c32f",
@@ -110,8 +206,24 @@
     "price": 999,
     "priceAfterDiscount": 799,
     "colors": ["black", "white"],
-    "imageCover": "anker-powerbank.jpg",
-    "images": ["anker-side.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921742/ecommerce/products/product-cover-1752921739763.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921739763"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921743/ecommerce/products/product-1752921741538-1.jpg",
+        "public_id": "ecommerce/products/product-1752921741538-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921744/ecommerce/products/product-1752921741542-2.jpg",
+        "public_id": "ecommerce/products/product-1752921741542-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921743/ecommerce/products/product-1752921741540-3.jpg",
+        "public_id": "ecommerce/products/product-1752921741540-3"
+      }
+    ],
     "category": "d2a7202aa4de476a900323d1",
     "subcategories": ["014741db66124055991704f9"],
     "brand": "735ce8d818524eb59a535781",
@@ -127,8 +239,24 @@
     "price": 18000,
     "priceAfterDiscount": 16999,
     "colors": ["graphite", "silver"],
-    "imageCover": "galaxy-tab-s8.jpg",
-    "images": ["tab-front.jpg", "tab-back.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921334/ecommerce/products/product-cover-1752921331920.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921331920"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921337/ecommerce/products/product-1752921333882-1.jpg",
+        "public_id": "ecommerce/products/product-1752921333882-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921335/ecommerce/products/product-1752921333878-2.jpg",
+        "public_id": "ecommerce/products/product-1752921333878-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921336/ecommerce/products/product-1752921333881-3.jpg",
+        "public_id": "ecommerce/products/product-1752921333881-3"
+      }
+    ],
     "category": "3a85be8105654003ad156b16",
     "subcategories": [],
     "brand": "3bf2e86ddf074363b59eb0a2",
@@ -144,8 +272,24 @@
     "price": 29000,
     "priceAfterDiscount": 25999,
     "colors": ["platinum silver"],
-    "imageCover": "xps13.jpg",
-    "images": ["xps13-front.jpg", "xps13-keyboard.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921298/ecommerce/products/product-cover-1752921294929.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921294929"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921300/ecommerce/products/product-1752921297584-1.jpg",
+        "public_id": "ecommerce/products/product-1752921297584-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921300/ecommerce/products/product-1752921297581-2.jpg",
+        "public_id": "ecommerce/products/product-1752921297581-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921299/ecommerce/products/product-1752921297578-3.jpg",
+        "public_id": "ecommerce/products/product-1752921297578-3"
+      }
+    ],
     "category": "8692663bf33541fbb03fd546",
     "subcategories": ["4bab686cab2d41b6bebb5dcb"],
     "brand": "5119c987edaf484d8898c32f",
@@ -161,8 +305,24 @@
     "price": 1599,
     "priceAfterDiscount": 1399,
     "colors": ["black", "blue"],
-    "imageCover": "soundcore.jpg",
-    "images": ["soundcore-open.jpg"],
+    "imageCover": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921235/ecommerce/products/product-cover-1752921231620.jpg",
+      "public_id": "ecommerce/products/product-cover-1752921231620"
+    },
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921236/ecommerce/products/product-1752921234558-1.jpg",
+        "public_id": "ecommerce/products/product-1752921234558-1"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921236/ecommerce/products/product-1752921234560-2.jpg",
+        "public_id": "ecommerce/products/product-1752921234560-2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752921236/ecommerce/products/product-1752921234562-3.jpg",
+        "public_id": "ecommerce/products/product-1752921234562-3"
+      }
+    ],
     "category": "d2a7202aa4de476a900323d1",
     "subcategories": [],
     "brand": "735ce8d818524eb59a535781",

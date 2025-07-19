@@ -37,10 +37,16 @@ const productSchema = new mongoose.Schema(
     },
     colors: [String],
     imageCover: {
-      type: String,
-      required: [true, 'Product image cover is required']
+      url: { type: String, required: true },
+      public_id: { type: String, required: true }
     },
-    images: [String],
+    images: [
+      {
+        _id: false,
+        url: { type: String, required: true },
+        public_id: { type: String, required: true }
+      }
+    ],
     category: {
       type: mongoose.Schema.ObjectId,
       ref: 'Category',
@@ -79,7 +85,7 @@ const productSchema = new mongoose.Schema(
 productSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'category',
-    select: 'name -_id'
+    select: 'name'
   });
   next();
 });
@@ -95,23 +101,23 @@ productSchema.virtual('reviews', {
 productSchema.pre('save', setSlugOnSave('title'));
 productSchema.pre('findOneAndUpdate', setSlugOnUpdate('title'));
 
-// Convert image names to full URLs
-const setImageURL = function (doc) {
-  if (doc.imageCover && !doc.imageCover.startsWith('http')) {
-    doc.imageCover = `${process.env.BASE_URL}/products/${doc.imageCover}`;
-  }
-  if (doc.images) {
-    doc.images = doc.images.map((image) => `${process.env.BASE_URL}/products/${image}`);
-  }
-};
+// // Convert image names to full URLs
+// const setImageURL = function (doc) {
+//   if (doc.imageCover && !doc.imageCover.startsWith('http')) {
+//     doc.imageCover = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+//   }
+//   if (doc.images) {
+//     doc.images = doc.images.map((image) => `${process.env.BASE_URL}/products/${image}`);
+//   }
+// };
 
-productSchema.post('init', function () {
-  setImageURL(this);
-});
+// productSchema.post('init', function () {
+//   setImageURL(this);
+// });
 
-productSchema.post('save', function () {
-  setImageURL(this);
-});
+// productSchema.post('save', function () {
+//   setImageURL(this);
+// });
 
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

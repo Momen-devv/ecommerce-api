@@ -26,10 +26,6 @@ exports.createProductValidator = (req, res, next) => {
       'number.less': 'Discounted price must be less than actual price'
     }),
     colors: Joi.array().items(Joi.string()),
-    imageCover: Joi.string().required().messages({
-      'string.empty': 'Product image cover is required'
-    }),
-    images: Joi.array().items(Joi.string()),
     category: Joi.string()
       .regex(/^[0-9a-fA-F]{24}$/)
       .required()
@@ -91,8 +87,6 @@ exports.updateProductValidator = (req, res, next) => {
       'number.less': 'Discounted price must be less than actual price'
     }),
     colors: Joi.array().items(Joi.string()),
-    imageCover: Joi.string().optional(),
-    images: Joi.array().items(Joi.string()),
     category: Joi.string()
       .regex(/^[0-9a-fA-F]{24}$/)
       .optional()

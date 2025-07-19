@@ -23,7 +23,8 @@ exports.validateUpdateSettings = (req, res, next) => {
   if (error) {
     return res.status(400).json({
       status: 'fail',
-      message: error.details[0].message
+      message: 'Invalid setting data.',
+      errors: error.details.map((d) => d.message)
     });
   }
 

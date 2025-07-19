@@ -1,46 +1,85 @@
+const cloudinary = require('../utils/cloudinary');
+const streamifier = require('streamifier');
 const sharp = require('sharp');
 const Product = require('../models/productModel');
 const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const { uploadMixOfImages } = require('../Middlewares/uploadImage');
 
-// Handle image upload (cover + multiple images)
+// Middleware to handle image upload from request
 exports.uploadProductImages = uploadMixOfImages([
   { name: 'imageCover', maxCount: 1 },
-  { name: 'images', maxCount: 8 }
+  { name: 'images', maxCount: 3 }
 ]);
 
-// Resize and save uploaded images
-exports.resizeProductImages = catchAsync(async (req, res, next) => {
+// Upload buffer to Cloudinary
+const uploadToCloudinary = (buffer, publicId, folder) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: publicId,
+        resource_type: 'image'
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
+
+// Main middleware to process + upload images
+exports.handleProductImagesUpload = catchAsync(async (req, res, next) => {
+  if (!req.files) return next();
+
+  // Upload cover Image
   if (req.files.imageCover) {
-    const imageCoverFileName = `product-${Math.round(Math.random() * 1e9)}-${Date.now()}-cover.jpeg`;
+    const file = req.files.imageCover[0];
 
-    await sharp(req.files.imageCover[0].buffer)
+    const compressedBuffer = await sharp(file.buffer)
       .resize(2000, 1333)
-      .toFormat('jpeg')
       .jpeg({ quality: 95 })
-      .toFile(`uploads/products/${imageCoverFileName}`);
+      .toBuffer();
 
-    req.body.imageCover = imageCoverFileName;
+    const result = await uploadToCloudinary(
+      compressedBuffer,
+      `product-cover-${Date.now()}`,
+      'ecommerce/products'
+    );
+
+    req.body.imageCover = {
+      url: result.secure_url,
+      public_id: result.public_id
+    };
   }
 
-  if (req.files.images) {
-    req.body.images = [];
-
-    await Promise.all(
-      req.files.images.map(async (img, index) => {
-        const imagesName = `product-${Math.round(Math.random() * 1e9)}-${Date.now()}-${index + 1}.jpeg`;
-
-        await sharp(img.buffer)
+  // Upload multiple Images
+  if (req.files.images && req.files.images.length > 0) {
+    const uploadedImages = await Promise.all(
+      req.files.images.map(async (file, index) => {
+        const compressedBuffer = await sharp(file.buffer)
           .resize(600, 600)
-          .toFormat('jpeg')
-          .jpeg({ quality: 95 })
-          .toFile(`uploads/products/${imagesName}`);
+          .jpeg({ quality: 85 })
+          .toBuffer();
 
-        req.body.images.push(imagesName);
+        const result = await uploadToCloudinary(
+          compressedBuffer,
+          `product-${Date.now()}-${index + 1}`,
+          'ecommerce/products'
+        );
+
+        return {
+          url: result.secure_url,
+          public_id: result.public_id
+        };
       })
     );
+
+    req.body.images = uploadedImages;
   }
+
   next();
 });
 
