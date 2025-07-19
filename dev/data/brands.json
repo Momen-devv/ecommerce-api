@@ -1,5 +1,26 @@
 [
-  { "_id": "5119c987edaf484d8898c32f", "name": "Apple" },
-  { "_id": "3bf2e86ddf074363b59eb0a2", "name": "Samsung" },
-  { "_id": "735ce8d818524eb59a535781", "name": "Anker" }
+  {
+    "_id": "5119c987edaf484d8898c32f",
+    "name": "Apple",
+    "image": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752958446/ecommerce/brands/brand-image-1752958443911.jpg",
+      "public_id": "ecommerce/brands/brand-image-1752958443911"
+    }
+  },
+  {
+    "_id": "3bf2e86ddf074363b59eb0a2",
+    "name": "Samsung",
+    "image": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752958429/ecommerce/brands/brand-image-1752958427081.jpg",
+      "public_id": "ecommerce/brands/brand-image-1752958427081"
+    }
+  },
+  {
+    "_id": "735ce8d818524eb59a535781",
+    "name": "Anker",
+    "image": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752958156/ecommerce/brands/brand-image-1752958154098.jpg",
+      "public_id": "ecommerce/brands/brand-image-1752958154098"
+    }
+  }
 ]

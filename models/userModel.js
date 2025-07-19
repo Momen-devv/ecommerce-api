@@ -23,7 +23,17 @@ const userSchema = mongoose.Schema(
       lowercase: true
     },
     phone: String,
-    profileImage: String,
+    profileImage: {
+      url: {
+        type: String,
+        default:
+          'https://res.cloudinary.com/dsui5qi7x/image/upload/v1752935261/ecommerce/users/user-profileImage-1752935259288.png'
+      },
+      public_id: {
+        type: String,
+        default: null
+      }
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -88,21 +98,6 @@ userSchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   next();
-});
-
-// Add full image URL if not already full
-const setImageURL = function (doc) {
-  if (doc.profileImage && !doc.profileImage.startsWith('http')) {
-    doc.profileImage = `${process.env.BASE_URL}/users/${doc.profileImage}`;
-  }
-};
-
-userSchema.post('init', function () {
-  setImageURL(this);
-});
-
-userSchema.post('save', function () {
-  setImageURL(this);
 });
 
 // Check if password changed after JWT was issued

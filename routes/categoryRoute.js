@@ -7,6 +7,8 @@ const {
   updateCategoryValidator
 } = require('../validators/category.validator');
 
+const { deleteCategoryImage, deleteOldCategoryImage } = require('../Middlewares/deleteImages');
+
 const {
   createCategory,
   getAllCategories,
@@ -14,7 +16,7 @@ const {
   updateCategory,
   deleteCategory,
   uploadCategoryImage,
-  reSizePhoto
+  handleCategoryImageUpload
 } = require('../controllers/categoryController');
 
 const authController = require('../controllers/authController');
@@ -32,8 +34,8 @@ router
     authController.protect,
     authController.restricTo('admin', 'manager'),
     uploadCategoryImage,
-    reSizePhoto,
     createCategoryValidator,
+    handleCategoryImageUpload,
     createCategory
   );
 
@@ -45,14 +47,16 @@ router
     authController.protect,
     authController.restricTo('admin', 'manager'),
     uploadCategoryImage,
-    reSizePhoto,
     updateCategoryValidator,
+    deleteOldCategoryImage,
+    handleCategoryImageUpload,
     updateCategory
   )
   .delete(
     authController.protect,
     authController.restricTo('admin', 'manager'),
     mongoIdValidator,
+    deleteCategoryImage,
     deleteCategory
   );
 

@@ -11,6 +11,7 @@ const {
 const authController = require('../controllers/authController');
 const checkUserExists = require('../Middlewares/checkUserExists');
 const checkCurrentPasswordCorrect = require('../Middlewares/checkCurrentPasswordCorrect');
+const { deleteUserImage, deleteOldProfileImage } = require('../Middlewares/deleteImages');
 
 const {
   createUser,
@@ -19,7 +20,7 @@ const {
   updateUser,
   deleteUser,
   uploadUserImage,
-  reSizePhoto,
+  handleUserImageUpload,
   changeUserPassword,
   deleteMe,
   getMe,
@@ -34,8 +35,16 @@ router.use(authController.protect);
 
 // Current logged-in user routes
 router.route('/me').get(getMe, getUser);
-router.route('/deleteMe').delete(deleteMe);
-router.route('/updateMe').patch(uploadUserImage, reSizePhoto, updateMeValidator, updateMe);
+router.route('/deleteMe').delete(deleteMe); // Not delete user data just make it active false
+router
+  .route('/updateMe') // Delete old profileImage
+  .patch(
+    uploadUserImage,
+    updateMeValidator,
+    deleteOldProfileImage,
+    handleUserImageUpload,
+    updateMe
+  );
 router
   .route('/updateMePassword')
   .patch(updateMePasswordValidator, checkCurrentPasswordCorrect, updateMePassword);
@@ -52,12 +61,18 @@ router
 router
   .route('/')
   .get(getAllUsers)
-  .post(uploadUserImage, reSizePhoto, createUserValidator, createUser);
+  .post(uploadUserImage, createUserValidator, handleUserImageUpload, createUser);
 
 router
   .route('/:id')
   .get(mongoIdValidator, getUser)
-  .patch(uploadUserImage, reSizePhoto, updateUserValidator, updateUser)
-  .delete(mongoIdValidator, deleteUser);
+  .patch(
+    uploadUserImage,
+    updateUserValidator,
+    deleteOldProfileImage,
+    handleUserImageUpload,
+    updateUser
+  )
+  .delete(mongoIdValidator, deleteUserImage, deleteUser); // Delete profile image with deleteing user(admin only)
 
 module.exports = router;

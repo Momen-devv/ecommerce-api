@@ -8,10 +8,6 @@ exports.createCategoryValidator = (req, res, next) => {
       'string.min': 'Category name must be at least {#limit} characters',
       'string.max': 'Category name must be at most {#limit} characters',
       'any.required': 'Category name is required'
-    }),
-    image: Joi.string().optional().messages({
-      'string.base': 'Image must be a string',
-      'string.empty': 'Image cannot be empty'
     })
   });
 
@@ -38,10 +34,6 @@ exports.updateCategoryValidator = (req, res, next) => {
       'string.empty': 'Category name cannot be empty',
       'string.min': 'Category name must be at least {#limit} characters',
       'string.max': 'Category name must be at most {#limit} characters'
-    }),
-    image: Joi.string().optional().messages({
-      'string.base': 'Image must be a string',
-      'string.empty': 'Image cannot be empty'
     })
   });
 

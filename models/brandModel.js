@@ -15,7 +15,16 @@ const brandSchema = new mongoose.Schema(
       type: String,
       lowercase: true
     },
-    image: String
+    image: {
+      url: {
+        type: String,
+        require: [true, 'Brand must hava a image']
+      },
+      public_id: {
+        type: String,
+        require: true
+      }
+    }
   },
   { timestamps: true }
 );
@@ -23,21 +32,6 @@ const brandSchema = new mongoose.Schema(
 // Generate slug before save/update
 brandSchema.pre('save', setSlugOnSave('name'));
 brandSchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
-
-// Add full image URL after retrieving or saving
-const setImageURL = function (doc) {
-  if (doc.image) {
-    doc.image = `${process.env.BASE_URL}/brands/${doc.image}`;
-  }
-};
-
-brandSchema.post('init', function () {
-  setImageURL(this);
-});
-
-brandSchema.post('save', function () {
-  setImageURL(this);
-});
 
 const Brand = mongoose.model('Brand', brandSchema);
 module.exports = Brand;

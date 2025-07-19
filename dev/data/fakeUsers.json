@@ -4,7 +4,9 @@
     "name": "Momen Elshamy",
     "email": "momen@example.com",
     "password": "$2b$12$Yi6n75i1G.s0eOLoZ2XJauXCaOk0n8IeViVhgestTYUfIzHxFKYy2",
-    "profileImage": "default.jpg",
+    "profileImage": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752935261/ecommerce/users/user-profileImage-1752935259288.png"
+    },
     "role": "admin"
   },
   {
@@ -12,7 +14,9 @@
     "name": "Sara Mahmoud",
     "email": "sara@example.com",
     "password": "$2b$12$YBzEY6YQtew2hEYmMVn.bem8nWJwSB4RWKxrxf.floZuQPbBURtjq",
-    "profileImage": "default.jpg",
+    "profileImage": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752935261/ecommerce/users/user-profileImage-1752935259288.png"
+    },
     "role": "user"
   },
   {
@@ -20,7 +24,9 @@
     "name": "Youssef Adel",
     "email": "youssef@example.com",
     "password": "$2b$12$QiP.3Pi8DTyR39DkQyFy2uSKMv98CQLKCwZ5qTMBLIhNec2JXPc4S",
-    "profileImage": "default.jpg",
+    "profileImage": {
+      "url": "https://res.cloudinary.com/dsui5qi7x/image/upload/v1752935261/ecommerce/users/user-profileImage-1752935259288.png"
+    },
     "role": "user"
   }
 ]

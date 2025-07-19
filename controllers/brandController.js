@@ -1,3 +1,5 @@
+const cloudinary = require('../utils/cloudinary');
+const streamifier = require('streamifier');
 const sharp = require('sharp');
 const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
@@ -7,18 +9,43 @@ const Brand = require('../models/brandModel');
 // Upload image from req.file
 exports.uploadBrandImage = uploadSingleImage('image');
 
-// Resize and save brand image
-exports.reSizePhoto = catchAsync(async (req, res, next) => {
-  const fileName = `brand-${Math.round(Math.random() * 1e9)}-${Date.now()}.jpeg`;
+// Upload buffer to Cloudinary
+const uploadToCloudinary = (buffer, publicId, folder) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: publicId,
+        resource_type: 'image'
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
 
+// Main middleware to process + upload images
+exports.handleBrandImageUpload = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  // Upload cover Image
   if (req.file) {
-    await sharp(req.file.buffer)
+    const compressedBuffer = await sharp(req.file.buffer)
       .resize(500, 500)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toFile(`uploads/brands/${fileName}`);
+      .jpeg({ quality: 80 })
+      .toBuffer();
 
-    req.body.image = fileName;
+    const result = await uploadToCloudinary(
+      compressedBuffer,
+      `brand-image-${Date.now()}`,
+      'ecommerce/brands'
+    );
+    req.body.image = {
+      url: result.secure_url,
+      public_id: result.public_id
+    };
   }
 
   next();

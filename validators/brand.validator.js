@@ -8,11 +8,6 @@ exports.createBrandValidator = (req, res, next) => {
       'string.min': 'Brand name must be at least {#limit} characters',
       'string.max': 'Brand name must be at most {#limit} characters',
       'any.required': 'Brand name is required'
-    }),
-    image: Joi.string().required().messages({
-      'string.base': 'Image must be a string',
-      'string.empty': 'Image cannot be empty',
-      'any.required': 'Image is required'
     })
   });
 
@@ -39,10 +34,6 @@ exports.updateBrandValidator = (req, res, next) => {
       'string.empty': 'Brand name cannot be empty',
       'string.min': 'Brand name must be at least {#limit} characters',
       'string.max': 'Brand name must be at most {#limit} characters'
-    }),
-    image: Joi.string().optional().messages({
-      'string.base': 'Image must be a string',
-      'string.empty': 'Image cannot be empty'
     })
   });
 

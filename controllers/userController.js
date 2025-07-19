@@ -1,3 +1,5 @@
+const cloudinary = require('../utils/cloudinary');
+const streamifier = require('streamifier');
 const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -35,19 +37,54 @@ const createSendToken = (user, statusCode, req, res) => {
 // Upload user image middleware
 exports.uploadUserImage = uploadSingleImage('profileImage');
 
-// Resize uploaded user image
-exports.reSizePhoto = catchAsync(async (req, res, next) => {
-  const fileName = `user-${Math.round(Math.random() * 1e9)}-${Date.now()}.jpeg`;
+// Upload buffer to Cloudinary
+const uploadToCloudinary = (buffer, publicId, folder) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: publicId,
+        resource_type: 'image'
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
 
+// Main middleware to process + upload images
+exports.handleUserImageUpload = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  // Upload cover Image
   if (req.file) {
-    await sharp(req.file.buffer)
-      .resize(500, 500)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toFile(`uploads/users/${fileName}`);
+    const compressedBuffer = await sharp(req.file.buffer)
+      .resize(500, 500, {
+        fit: sharp.fit.cover,
+        position: sharp.strategy.entropy
+      })
+      .composite([
+        {
+          input: Buffer.from(`<svg><circle cx="250" cy="250" r="250" fill="white"/></svg>`),
+          blend: 'dest-in'
+        }
+      ])
+      .png()
+      .toBuffer();
 
-    req.body.profileImage = fileName;
+    const result = await uploadToCloudinary(
+      compressedBuffer,
+      `user-profileImage-${Date.now()}`,
+      'ecommerce/users'
+    );
+    req.body.profileImage = {
+      url: result.secure_url,
+      public_id: result.public_id
+    };
   }
+
   next();
 });
 

@@ -15,7 +15,16 @@ const categorySchema = new mongoose.Schema(
       type: String,
       lowercase: true
     },
-    image: String
+    image: {
+      url: {
+        type: String,
+        require: [true, 'Category must hava a image']
+      },
+      public_id: {
+        type: String,
+        require: true
+      }
+    }
   },
   { timestamps: true }
 );
@@ -23,21 +32,6 @@ const categorySchema = new mongoose.Schema(
 // Generate slug before save/update
 categorySchema.pre('save', setSlugOnSave('name'));
 categorySchema.pre('findOneAndUpdate', setSlugOnUpdate('name'));
-
-// Add full image URL after retrieving or saving
-const setImageURL = function (doc) {
-  if (doc.image) {
-    doc.image = `${process.env.BASE_URL}/categories/${doc.image}`;
-  }
-};
-
-categorySchema.post('init', function () {
-  setImageURL(this);
-});
-
-categorySchema.post('save', function () {
-  setImageURL(this);
-});
 
 const Category = mongoose.model('Category', categorySchema);
 module.exports = Category;

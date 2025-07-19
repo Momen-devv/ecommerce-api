@@ -3,6 +3,8 @@ const { mongoIdValidator } = require('../validators/commonValidators');
 const { createBrandValidator, updateBrandValidator } = require('../validators/brand.validator');
 const authController = require('../controllers/authController');
 
+const { deleteBrandImage, deleteOldBrandImage } = require('../Middlewares/deleteImages');
+
 const {
   createBrand,
   getAllBrands,
@@ -10,7 +12,7 @@ const {
   updateBrand,
   deleteBrand,
   uploadBrandImage,
-  reSizePhoto
+  handleBrandImageUpload
 } = require('../controllers/brandController');
 
 const router = express.Router();
@@ -24,8 +26,8 @@ router.post(
   authController.protect,
   authController.restricTo('admin', 'manager'),
   uploadBrandImage,
-  reSizePhoto,
   createBrandValidator,
+  handleBrandImageUpload,
   createBrand
 );
 
@@ -36,14 +38,16 @@ router
     authController.protect,
     authController.restricTo('admin', 'manager'),
     uploadBrandImage,
-    reSizePhoto,
     updateBrandValidator,
+    deleteOldBrandImage,
+    handleBrandImageUpload, // middlewaer delete image after update image
     updateBrand
   )
   .delete(
     authController.protect,
     authController.restricTo('admin', 'manager'),
     mongoIdValidator,
+    deleteBrandImage,
     deleteBrand
   );
 

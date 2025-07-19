@@ -18,7 +18,6 @@ exports.createUserValidator = (req, res, next) => {
       .messages({
         'string.pattern.base': 'Phone number must be 10–15 digits, optionally starting with +'
       }),
-    profileImage: Joi.string().optional(),
     password: Joi.string().min(8).required().messages({
       'string.min': 'Password must be at least {#limit} characters',
       'any.required': 'Password is required'
@@ -67,7 +66,6 @@ exports.updateUserValidator = (req, res, next) => {
       .messages({
         'string.pattern.base': 'Phone number must be 10–15 digits, optionally starting with +'
       }),
-    profileImage: Joi.string().optional(),
     role: Joi.string().valid('user', 'admin').messages({
       'any.only': 'Role must be either "user" or "admin"'
     })
@@ -158,8 +156,7 @@ exports.updateMeValidator = (req, res, next) => {
       .pattern(/^\+?[0-9]{10,15}$/)
       .messages({
         'string.pattern.base': 'Phone number must be 10–15 digits, optionally starting with +'
-      }),
-    profileImage: Joi.string().optional()
+      })
   });
 
   const { error, value } = schema.validate(req.body, { abortEarly: false });
